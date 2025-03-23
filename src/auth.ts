@@ -33,7 +33,7 @@ export async function getRefreshToken({ token }: { token: string }) {
 
     const data = await response.json();
 
-    return {user: data.data, token: data.token.session_token};
+    return { user: data.data, token: data.token.session_token };
   } catch (error) {
     console.error("Something went wrong while refreshing your token:", error);
   }
@@ -48,7 +48,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        try {
           const response = await fetch(`${API_ENDPOINT}/auth/login`, {
             method: "POST",
             headers: {
@@ -57,26 +56,20 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             body: JSON.stringify({ user_email: credentials.email, user_password: credentials.password }),
           });
 
-          if (!response.ok) {
-            console.error("Error: Invalid response from API");
-            return null;
-          }
-
           const data = await response.json();
-
-          return {
-            id: data.data.user_id,
-            name: data.data.user_name,
-            email: data.data.user_email,
-            image: data.data.user_profile,
-            phone: data.data.user_phone,
-            role: data.data.roles,
-            token: data.token,
-          };
-        } catch (error) {
-          console.error("Authorization Error:", error);
+          if (response.ok && data.data) {
+            return {
+              id: data.data.user_id,
+              name: data.data.user_name,
+              email: data.data.user_email,
+              image: data.data.user_profile,
+              phone: data.data.user_phone,
+              role: data.data.roles,
+              token: data.token,
+            };
+          }
           return null;
-        }
+
       },
     }),
   ],
@@ -99,7 +92,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (token.token) {
         const data = await getRefreshToken({ token: token.token as string });
         if (data?.token) {
-          token.token = data.token;  
+          token.token = data.token;
           session.token = data.token;
         }
       }

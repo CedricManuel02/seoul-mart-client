@@ -11,7 +11,6 @@ export async function getNotificationsServerAction () {
         }
     });
 
-
     const data = await response.json();
 
     return data.notifications;

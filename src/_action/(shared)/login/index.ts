@@ -2,6 +2,8 @@
 import { API_ENDPOINT, EMAIL_REGEX } from "@/_constant/constant";
 import { auth, signIn } from "@/auth";
 import { getSessionNextAuth } from "@/lib/session";
+import { AuthError } from "next-auth";
+import { SignInResponse } from "next-auth/react";
 
 export async function SignupServerAction(values: any) {
   try {
@@ -26,11 +28,18 @@ export async function SignupServerAction(values: any) {
 
 export async function SigninServerAction(values: any) {
   try {
-    const response = await signIn("credentials", { ...values, redirect: false });
-    return { response };
+    await signIn("credentials", { ...values, redirect: false });
+    
   } catch (error) {
-    console.error("Something went wrong while logging in to your account", error);
-    return { error: "Something went wrong while logging in to your account" };
+    if(error instanceof AuthError) {
+      switch(error.type) {
+        case "CredentialsSignin" :
+          return {error: "Invalid Credentials"};
+        default : 
+          return {error: "Something went wrong please try again"};
+      }
+    }
+    throw error;
   }
 }
 
