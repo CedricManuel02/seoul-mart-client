@@ -1,0 +1,66 @@
+"use client";
+import { addToCartServerAction } from "@/_action/(user)/cart";
+import ButtonLoading from "@/_components/shared/button-loading/button-loading";
+import { clearSelectedItems } from "@/_redux/features/cart-slice";
+import { calculateCheckoutTotal, clearCheckoutItem } from "@/_redux/features/checkout-slice";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
+import { ShoppingCart } from "lucide-react";
+import React, { useCallback, useState } from "react";
+import { useDispatch } from "react-redux";
+
+interface IItemActionButton {
+  session: any;
+  product_id: string;
+  selected_variant_id: string;
+  item_quantity: number;
+}
+
+export default function ItemActionButton({ session, product_id, selected_variant_id, item_quantity }: IItemActionButton) {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleAddingToCart = useCallback(async (product_id: string) => {
+    try {
+      setLoading(true);
+
+      if (!session) {
+        toast({
+          title: "Login in to your account",
+          variant: "destructive",
+          description: "You should login to your account",
+        });
+        return;
+      }
+
+      const payload = { product_id, selected_variant_id, item_quantity };
+
+      const response = await addToCartServerAction(payload);
+
+      toast({
+        description: response.message,
+      });
+      dispatch(clearSelectedItems());
+      dispatch(clearCheckoutItem());
+      dispatch(calculateCheckoutTotal());
+    } catch (error) {
+      toast({
+        title: "Something went wrong",
+        description: "Something went wrong Please try again",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [selected_variant_id]);
+  return (
+    <div className="my-4 flex flex-wrap items-center gap-2">
+      <Button onClick={() => handleAddingToCart(product_id)} className="w-full md:w-2/12" variant={"outline"} disabled={loading}>
+        {loading ? <ButtonLoading text="Adding..." /> : "Add to Cart"}
+      </Button>
+      <Button className="w-full md:w-2/12 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600" disabled={loading}>
+        <ShoppingCart size={14} />
+        Checkout
+      </Button>
+    </div>
+  );
+}

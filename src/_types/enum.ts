@@ -1,0 +1,6 @@
+export enum CancelledOrderReason {
+    CHANGE_OF_ADDRESS = "CHANGE_OF_ADDRESS",
+    FRAUDULENT_ORDER = "FRAUDULENT_ORDER",
+    SHIPPING_DELAY = "SHIPPING_DELAY",
+    OTHER = "OTHER",
+  }
