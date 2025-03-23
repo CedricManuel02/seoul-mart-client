@@ -14,7 +14,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url)); 
   }
 
-  if(!token && pathname === "/profile") {
+  if(!token && (pathname === "/profile" || pathname === "/reset-profile-password" )) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
