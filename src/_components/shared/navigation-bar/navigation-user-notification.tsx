@@ -24,11 +24,13 @@ export default function NavigationUserNotification({ session }: { session: any }
   const getNotifications = async () => {
     try {
       const response = await getNotificationsServerAction();
-      setNotifications(response);
 
-      // Count unread notifications
-      const unread = response.filter((notif: INotifications) => !notif.notifications_read).length;
-      setUnreadCount(unread);
+      if(response) {
+        setNotifications(response);
+        // Count unread notifications
+        const unread = response.filter((notif: INotifications) => !notif.notifications_read).length;
+        setUnreadCount(unread);
+      }
     } catch (error) {
       console.error("Error fetching notifications:", error);
     }

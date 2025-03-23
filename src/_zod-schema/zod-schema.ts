@@ -35,6 +35,17 @@ export const formResetPasswordSchema = z
     message: "Password don't match",
     path: ["confirm_password"],
   });
+  export const formResetProfilePasswordSchema = z
+  .object({
+    user_password: z.string().min(1, {message: "Password is required"}),
+    new_password: z.string().min(8, { message: "Password must be 8 characters long" }),
+    confirm_password: z.string().min(8, { message: "Confirm Password must be 8 characters long" }),
+  })
+  .refine((data) => data.new_password === data.confirm_password, {
+    message: "Password don't match",
+    path: ["confirm_password"],
+  });
+
 
 
 // REGISTER ZOD SCHEMA

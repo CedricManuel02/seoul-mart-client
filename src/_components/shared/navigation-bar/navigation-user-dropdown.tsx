@@ -44,8 +44,10 @@ export default async function NavigationUserDropdown() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <KeyRound className="mr-2 h-4 w-4 text-slate-700" />
-          <span>Change Password</span>
+          <Link href={"/reset-profile-password"} className="flex items-center justify-center space-x-2">
+            <KeyRound className="mr-2 h-4 w-4 text-slate-700" />
+            <span>Change Password</span>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer">

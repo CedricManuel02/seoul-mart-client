@@ -12,8 +12,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { formLoginSchema } from "@/_zod-schema/zod-schema";
 import ButtonLoading from "@/_components/shared/button-loading/button-loading";
 import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { SigninServerAction } from "@/_action/(shared)/login";
+import { toast } from "@/hooks/use-toast";
 export default function Login() {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -34,9 +35,14 @@ export default function Login() {
     setState((prev) => ({ ...prev, loading: true }));
     try {
       const response = await SigninServerAction(values);
-      if(response) {
-        router.push("/")
+      if(response?.error) {
+        toast({
+          variant: "destructive",
+          description: response.error
+        });
+        return;
       }
+      router.push("/");
     } catch (error) {
       console.error("Something went wrong while logging in to your account", error);
       return { error: "Something went wrong while logging in to your account" };
@@ -61,9 +67,9 @@ export default function Login() {
                   name="email"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="font-medium text-slate-700">Email</FormLabel>
+                      <FormLabel htmlFor="email" className="font-medium text-slate-700">Email</FormLabel>
                       <FormControl>
-                        <Input type="email" id="email" placeholder="Enter your email" {...field} />
+                        <Input type="email" id="email" placeholder="Enter your email" {...field} autoComplete="true" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -74,9 +80,9 @@ export default function Login() {
                   name="password"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="font-medium text-slate-700">Password</FormLabel>
+                      <FormLabel  htmlFor="password" className="font-medium text-slate-700">Password</FormLabel>
                       <FormControl>
-                        <Input type="password" id="password" placeholder="Enter your password" {...field} />
+                        <Input type="password" id="password" placeholder="Enter your password" {...field} autoComplete="true"/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -85,7 +91,7 @@ export default function Login() {
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="remember-me" />
+                  <Checkbox id="remember-me" name="remember-me" />
                   <label htmlFor="remember-me" className="text-sm">
                     Remember Me
                   </label>

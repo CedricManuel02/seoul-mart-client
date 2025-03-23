@@ -1,7 +1,9 @@
 "use server";
 import { API_ENDPOINT, EMAIL_REGEX } from "@/_constant/constant";
-import { signIn } from "@/auth";
+import { auth, signIn } from "@/auth";
 import { getSessionNextAuth } from "@/lib/session";
+import { AuthError } from "next-auth";
+import { SignInResponse } from "next-auth/react";
 
 export async function SignupServerAction(values: any) {
   try {
@@ -26,11 +28,18 @@ export async function SignupServerAction(values: any) {
 
 export async function SigninServerAction(values: any) {
   try {
-    const response = await signIn("credentials", { ...values, redirect: false });
-    return { response };
+    await signIn("credentials", { ...values, redirect: false });
+    
   } catch (error) {
-    console.error("Something went wrong while logging in to your account", error);
-    return { error: "Something went wrong while logging in to your account" };
+    if(error instanceof AuthError) {
+      switch(error.type) {
+        case "CredentialsSignin" :
+          return {error: "Invalid Credentials"};
+        default : 
+          return {error: "Something went wrong please try again"};
+      }
+    }
+    throw error;
   }
 }
 
@@ -104,6 +113,41 @@ export async function ResetPasswordServerAction({
   } catch (error) {
     console.error("Something went wrong while processing your forgot password:", error);
     return { error: "Failed to process your forgot password" };
+  }
+}
+
+export async function ResetProfilePasswordServerAction({
+  new_password,
+  confirm_password,
+  user_password,
+}: {
+  new_password: string;
+  confirm_password: string;
+  user_password: string;
+}) {
+  try {
+    const auth_token = await getSessionNextAuth();
+
+    if (!new_password || !confirm_password || !user_password) return { error: "All fields are required"};
+
+    if(confirm_password !== new_password) return {error: "New password mismatch"};
+
+    const response = await fetch(`${API_ENDPOINT}/auth/reset-profile-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `auth__token=${auth_token}`
+      },
+      body: JSON.stringify({user_password, new_password, confirm_password }),
+    });
+    const data = await response.json();
+
+    if (!response.ok) return { error: data.message };
+
+    return { success: data.message };
+  } catch (error) {
+    console.error("Something went wrong while processing your reset password:", error);
+    return { error: "Failed to process your reset password" };
   }
 }
 
