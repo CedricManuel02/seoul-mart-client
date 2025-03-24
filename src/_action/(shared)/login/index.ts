@@ -170,6 +170,14 @@ export async function getVerificationTokenServerAction(token: string) {
     console.error("Something went wrong while verifying the token:", error);
   }
 }
+export async function getVerificationTokenEmailServerAction(token: string) {
+  try {
+    const response = await fetch(`${API_ENDPOINT}/auth/confirm-account/${token}`);
+    return {status: response.status};
+  } catch (error) {
+    console.error("Something went wrong while verifying the token:", error);
+  }
+}
 
 // export async function getAccountServerAction() {
 //   try {
