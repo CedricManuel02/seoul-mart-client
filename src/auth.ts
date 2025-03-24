@@ -69,7 +69,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             };
           }
           return null;
-
       },
     }),
   ],
