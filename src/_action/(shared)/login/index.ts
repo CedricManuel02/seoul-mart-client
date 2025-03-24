@@ -3,7 +3,7 @@ import { API_ENDPOINT, EMAIL_REGEX } from "@/_constant/constant";
 import { auth, signIn } from "@/auth";
 import { getSessionNextAuth } from "@/lib/session";
 import { AuthError } from "next-auth";
-import { SignInResponse } from "next-auth/react";
+import { cookies } from "next/headers";
 
 export async function SignupServerAction(values: any) {
   try {
@@ -26,10 +26,18 @@ export async function SignupServerAction(values: any) {
   }
 }
 
-export async function SigninServerAction(values: any) {
+export async function SigninServerAction(values: any, rememberMe: boolean) {
   try {
+    const cookieStore = await cookies();
     await signIn("credentials", { ...values, redirect: false });
-    
+
+    if(rememberMe) {
+      cookieStore.set("email", values.email);
+      cookieStore.set("remember-me", "true");
+    } else {
+      cookieStore.delete("email")
+      cookieStore.delete("remember-me")
+    }
   } catch (error) {
     if(error instanceof AuthError) {
       switch(error.type) {

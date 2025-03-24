@@ -11,22 +11,28 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { formLoginSchema } from "@/_zod-schema/zod-schema";
 import ButtonLoading from "@/_components/shared/button-loading/button-loading";
-import { useDispatch } from "react-redux";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { SigninServerAction } from "@/_action/(shared)/login";
 import { toast } from "@/hooks/use-toast";
+import cookie from "js-cookie";
+
+
 export default function Login() {
   const router = useRouter();
-  const dispatch = useDispatch();
+  const email = cookie.get("email");
+  const remember_me = cookie.get("remember-me");
+  const [rememberMe, setRememberMe] = useState<boolean>(false || Boolean(remember_me?.toLowerCase()));
   const [state, setState] = useState<{ loading: boolean; error: boolean }>({
     loading: false,
     error: false,
   });
 
+  console.log(email)
+
   const form = useForm<z.infer<typeof formLoginSchema>>({
     resolver: zodResolver(formLoginSchema),
     defaultValues: {
-      email: "",
+      email: email || "",
       password: "",
     },
   });
@@ -34,7 +40,7 @@ export default function Login() {
   async function onSubmit(values: z.infer<typeof formLoginSchema>) {
     setState((prev) => ({ ...prev, loading: true }));
     try {
-      const response = await SigninServerAction(values);
+      const response = await SigninServerAction(values, rememberMe);
       if(response?.error) {
         toast({
           variant: "destructive",
@@ -91,7 +97,7 @@ export default function Login() {
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="remember-me" name="remember-me" />
+                  <Checkbox id="remember-me" name="remember-me" onClick={() => setRememberMe(!rememberMe)} checked={rememberMe}/>
                   <label htmlFor="remember-me" className="text-sm">
                     Remember Me
                   </label>
