@@ -13,8 +13,7 @@ export default function Home() {
         {/* This is the hero description section */}
         <div className="w-full lg:w-6/12">
           <h1 className="py-2 text-slate-700 text-xl md:text-2xl lg:text-4xl font-bold">
-            A Warm Welcome to Bella &{" "}
-            <span className="text-green-500">Pepper’s</span> Taste of Korea
+            A Warm Welcome to <span className="text-green-500">Seoul</span> Mart's Taste of Korea
           </h1>
           <p className="text-slate-500 py-4 text-sm">
             Authentic Korean Beverages & Cuisine – Indulge in the Rich Flavors

@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { deleteProductServerAction } from "@/_action/(admin)/product";
 import ButtonLoading from "@/_components/shared/button-loading/button-loading";
+import { Trash } from "lucide-react";
 
 export default function DeleteProductModal({ product_id }: { product_id: string }) {
   const { toast } = useToast();
@@ -48,7 +49,7 @@ export default function DeleteProductModal({ product_id }: { product_id: string 
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <Button variant={"destructive"} onClick={() => setOpen(true)}>
-          Delete
+          <Trash/>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

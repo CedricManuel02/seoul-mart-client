@@ -25,7 +25,7 @@ export async function middleware(request: NextRequest) {
 
   if(token) {
     if(token.role === "ADMIN" && publicRoutes.includes(pathname)){
-      return NextResponse.redirect(new URL("/categories", request.url));
+      return NextResponse.redirect(new URL("/dashboard", request.url));
     }
     if(token.role === "USER" && protectedRoutes.includes(pathname)){
       return NextResponse.redirect(new URL("/", request.url));

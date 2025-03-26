@@ -5,7 +5,7 @@ import { clearSelectedItems } from "@/_redux/features/cart-slice";
 import { calculateCheckoutTotal, clearCheckoutItem } from "@/_redux/features/checkout-slice";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { ShoppingCart } from "lucide-react";
+import { CheckCircle2, ShoppingCart } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -37,8 +37,18 @@ export default function ItemActionButton({ session, product_id, selected_variant
 
       const response = await addToCartServerAction(payload);
 
+      if(response.status !== 201) {
+        toast({
+          variant: "destructive",
+          description: response.message,
+        });
+
+        return;
+      }
+     
       toast({
-        description: response.message,
+        variant: "default",
+        description: (<div className="flex items-center justify-start gap-2"><CheckCircle2 className="text-green-500"/><p>{response.message}</p></div>),
       });
       dispatch(clearSelectedItems());
       dispatch(clearCheckoutItem());

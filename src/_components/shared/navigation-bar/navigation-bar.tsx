@@ -10,7 +10,7 @@ export default function NavigationBar() {
       <section className="flex items-center justify-between w-11/12 xl:w-9/12 h-full m-auto">
         <Link href={"/"} className="flex items-center space-x-4">
           <Image src={Logo} alt="Bella and Pepper Logo" className="w-auto h-auto object-contain" width={40} height={40} loading="lazy" />
-          <h3 className="font-semibold hidden md:block">Bella & Pepper</h3>
+          <h3 className="font-semibold hidden md:block">Seoul Mart</h3>
         </Link>
         {/* Navigation Bar Search */}
         <NavigationSearch />
