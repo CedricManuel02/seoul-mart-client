@@ -7,7 +7,7 @@ import { ReduxProvider } from "@/_redux/provider";
 import Footer from "@/_components/shared/footer/footer";
 import SessionProvider from "./api/auth/[...nextauth]/provider/session-provider";
 export const metadata: Metadata = {
-  title: "Bella and Pepper Korean Store",
+  title: "Seoul Mart Korean Store",
   description: "",
 };
 export default function RootLayout({

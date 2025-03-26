@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import ProductBarcode from "./product-barcode";
+import { Pencil } from "lucide-react";
 export default function ProductTable({ products }: { products: IProduct[] }) {
   const router = useRouter();
   return (
@@ -51,8 +52,7 @@ export default function ProductTable({ products }: { products: IProduct[] }) {
                 <TableCell><p>{new Date(products.product_date_created).toLocaleDateString("en-US", {month: "long", day: "2-digit", year: "numeric"})}</p></TableCell>
                 <TableCell>
                    <div className="flex items-center space-x-2 justify-end">
-                   <Button variant={"outline"}>Discount</Button>
-                   <Button variant={"outline"} onClick={() => router.push(`/product/update/${products.product_id}`)}>Edit</Button>
+                   <Button variant={"outline"} onClick={() => router.push(`/product/update/${products.product_id}`)}><Pencil/></Button>
                     {products.product_date_deleted === null ? (
                         <DeleteProductModal product_id={products.product_id}/>
                     ) : (

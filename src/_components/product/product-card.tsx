@@ -36,9 +36,9 @@ export default function ProductCard(product: IProduct) {
             height={100}
             loading="lazy"
           />
-          <section className="w-full whitespace-nowrap">
-            <h3 className="text-slate-700 text-xs md:text-sm font-medium">
-              {product.product_name.length > 18 ? `${product.product_name.slice(0, 18)}...` : product.product_name}
+          <section className="w-full">
+            <h3 className="text-slate-700 text-xs sm:text-sm font-medium">
+              {product.product_name.length > 16 ? `${product.product_name.slice(0, 16)}...` : product.product_name}
             </h3>
             <ProductStarRating product={product} />
             {discountPercentage > 0 ? (

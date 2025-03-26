@@ -17,21 +17,23 @@ export default function Footer() {
               loading="lazy"
             />
             <p className="font-medium text-slate-700">
-              Bella and <span className="text-green-500">Pepper’s</span>
+              Seoul <span className="text-green-500">Store's</span>
               <br />
               <span className="text-slate-500">Providing quality korean food and beverages</span>
+              <br />
+              <span className="text-slate-500">Created by <Link className="text-green-500" href={"/"}>@cedricmanuel</Link></span>
             </p>
           </aside>
           <nav className="md:place-self-center md:justify-self-end">
             <div className="flex items-center justify-start gap-2">
               <Link href={"#"}>
-                <TwitterIcon className="text-green-600 hover:text-green-600"/>
+                <TwitterIcon className="text-green-600 hover:text-green-600" />
               </Link>
               <Link href={"#"}>
-                <FacebookIcon className="text-green-600 hover:text-green-600"/>
+                <FacebookIcon className="text-green-600 hover:text-green-600" />
               </Link>
               <Link href={"#"}>
-                <InstagramIcon className="text-green-600 hover:text-green-600"/>
+                <InstagramIcon className="text-green-600 hover:text-green-600" />
               </Link>
             </div>
           </nav>
