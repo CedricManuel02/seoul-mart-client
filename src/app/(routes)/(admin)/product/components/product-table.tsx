@@ -1,5 +1,19 @@
 "use client"
-import { IProduct } from "@/_interface/interface";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable,
+  VisibilityState,
+} from "@tanstack/react-table"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -7,62 +21,223 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/table"
+import React from "react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { toast } from "@/hooks/use-toast";
+import { MoreHorizontal } from "lucide-react";
+import { deleteProductServerAction, retrieveProductServerAction } from "@/_action/(admin)/product";
+import { IProduct } from "@/_interface/interface";
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[]
+}
 
-import ProductVariants from "./product-variants";
-import Image from "next/image";
-import DeleteProductModal from "./delete-product-modal";
-import RetrieveProductModal from "./retrieve-product-modal";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
-import ProductBarcode from "./product-barcode";
-import { Pencil } from "lucide-react";
-export default function ProductTable({ products }: { products: IProduct[] }) {
-  const router = useRouter();
+export default function ProductTable({ columns, data }: DataTableProps<IProduct, any>) {
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  )
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = React.useState({})
+
+  const table = useReactTable({
+    data,
+    columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+    },
+  })
+  const handleDeleteProduct = async () => {
+    try {
+      const selectedRowIds = Object.keys(rowSelection); // Get selected row IDs
+  
+      if (selectedRowIds.length === 0) {
+        toast({
+          title: "No rows selected",
+          variant: "destructive",
+          description: "Please select a row to delete",
+        });
+        return;
+      }
+  
+      for (const rowId of selectedRowIds) {
+        const product = table.getRow(rowId)
+        const product_id = product.original.product_id ;
+        const response = await deleteProductServerAction(product_id);
+  
+        if (response.error) {
+          console.error("Error while deleting product:", response.error);
+          toast({
+            title: "Failed to delete",
+            variant: "destructive",
+            description: `Failed to delete product with ID ${rowId}, please try again`,
+          });
+          return;
+        }
+      }
+  
+      toast({
+        title: "Product(s) deleted successfully",
+        variant: "default",
+        description: `Successfully deleted ${selectedRowIds.length} product(s)`,
+      });
+  
+    } catch (error) {
+      console.error("Something went wrong while deleting product:", error);
+    }
+  };
+  const handleRetrieveProduct = async () => {
+    try {
+      const selectedRowIds = Object.keys(rowSelection); // Get selected row IDs
+  
+      if (selectedRowIds.length === 0) {
+        toast({
+          title: "No rows selected",
+          variant: "destructive",
+          description: "Please select a row to retrieve",
+        });
+        return;
+      }
+  
+      for (const rowId of selectedRowIds) {
+        const product = table.getRow(rowId)
+        const product_id = product.original.product_id ;
+        const response = await retrieveProductServerAction(product_id);
+  
+        if (response.error) {
+          console.error("Error while retrieve product:", response.error);
+          toast({
+            title: "Failed to retrieve",
+            variant: "destructive",
+            description: `Failed to retrieve product, please try again`,
+          });
+          return;
+        }
+      }
+  
+      toast({
+        title: "Product(s) retrieve successfully",
+        variant: "default",
+        description: `Successfully retrieve ${selectedRowIds.length} product(s)`,
+      });
+  
+    } catch (error) {
+      console.error("Something went wrong while retrieving product:", error);
+    }
+  };
+ 
   return (
-      <Table className="whitespace-nowrap">
-        {/* Table Header */}
-        <TableHeader>
-          <TableRow>
-            <TableHead>Barcode</TableHead>
-            <TableHead>Product Name</TableHead>
-            <TableHead>Variants</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Date Created</TableHead>
-            <TableHead className="text-right">Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        {/* Table Body */}
-        <TableBody>
-          {products
-            .map((products) => (
-              <TableRow key={products.product_id} className="text-slate-500 font-medium">
-                <TableCell><ProductBarcode barcode={products.product_upc_number}/></TableCell>
-                <TableCell>
-                    <div className="flex items-center gap-4 w-80">
-                    <Image className="w-10 h-10 object-contain" src={products.tbl_variants[0].variant_image_url} alt={products.tbl_variants[0].variant_name} width={20} height={20} priority={true}/>
-                    {products.product_name}
-                    </div>
-                </TableCell>
-                <TableCell><ProductVariants variant={products.tbl_variants}/></TableCell>
-                <TableCell>{products.tbl_categories.category_name}</TableCell>
-                <TableCell>{products.product_date_deleted ? (<Badge variant={"destructive"}>Not Available</Badge>) : (<Badge variant={"outline"}>Available</Badge>)}</TableCell>
-                <TableCell><p>{new Date(products.product_date_created).toLocaleDateString("en-US", {month: "long", day: "2-digit", year: "numeric"})}</p></TableCell>
-                <TableCell>
-                   <div className="flex items-center space-x-2 justify-end">
-                   <Button variant={"outline"} onClick={() => router.push(`/product/update/${products.product_id}`)}><Pencil/></Button>
-                    {products.product_date_deleted === null ? (
-                        <DeleteProductModal product_id={products.product_id}/>
-                    ) : (
-                        <RetrieveProductModal product_id={products.product_id}/>
-                    )}
-                   </div>
-                </TableCell>
+
+    <div className="w-11/12 xl:w-9/12 min-h-screen h-auto m-auto py-5 flex flex-col gap-2">
+      <header className="bg-white p-4 rounded-md shadow flex flex-col items-start md:flex-row justify-between md:items-center">
+        <h2 className="text-slate-700 font-semibold text-md lg:text-xl">
+          Product
+        </h2>
+        <div className="flex items-center gap-2">
+          <Input type="text" placeholder="Search Product Name..."
+            value={(table.getColumn("product_name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("product_name")?.setFilterValue(event.target.value)
+            } className="w-full lg:min-w-[250px]" />
+          <Link href={"/product/create"}>
+            <Button variant={"default"} className="bg-green-500 hover:bg-green-600">Create</Button>
+          </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant={"outline"}>
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem onClick={handleDeleteProduct}>Delete</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleRetrieveProduct}>Retrieve</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </header>
+      <div className="rounded-md border bg-white p-4 whitespace-nowrap">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                    </TableHead>
+                  )
+                })}
               </TableRow>
             ))}
-        </TableBody>
-      </Table>
-  );
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+     <div className="py-4 flex flex-col md:flex-row justify-between items-center">
+     <div className="text-sm flex text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredRowModel().rows.length} row(s) selected.
+        </div>
+      <div className="flex items-center justify-end space-x-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
+      </div>
+     </div>
+    </div>
+  )
 }

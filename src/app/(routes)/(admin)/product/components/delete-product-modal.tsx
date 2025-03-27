@@ -48,7 +48,7 @@ export default function DeleteProductModal({ product_id }: { product_id: string 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant={"destructive"} onClick={() => setOpen(true)}>
+        <Button variant={"outline"} onClick={() => setOpen(true)}>
           <Trash/>
         </Button>
       </AlertDialogTrigger>
