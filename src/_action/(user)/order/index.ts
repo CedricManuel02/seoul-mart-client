@@ -1,8 +1,8 @@
 "use server";
 import { revalidateTag } from "next/cache";
-import { redirect } from "next/navigation";
 import { API_ENDPOINT } from "@/_constant/constant";
 import { CancelledOrderReason } from "@/_types/enum";
+import { getSessionNextAuth } from "@/lib/session";
 
 // ? THIS IS THE CUSTOMER ORDER SERVER ACTION
 // * Done Clean Coding
@@ -10,12 +10,11 @@ import { CancelledOrderReason } from "@/_types/enum";
 // GET ALL CUSTOMER ORDER SERVER ACTION
 export async function getUserOrderServerAction() {
   try {
-
-
+    const auth_token = await getSessionNextAuth();
  
-    const response = await fetch(`${API_ENDPOINT}/auth/order/USERID`, {
+    const response = await fetch(`${API_ENDPOINT}/auth/order`, {
       method: "GET",
-      headers: { Authorization: `Bearer ` },
+      headers: { Cookie: `auth__token=${auth_token}` },
     });
 
     if (!response.ok) return { error: "Failed to retrieve your orders" };
@@ -31,19 +30,20 @@ export async function getUserOrderServerAction() {
 export async function getOrderServerAction({ order_id }: { order_id: string }) {
   try {
 
-
+    const auth_token = await getSessionNextAuth();
  
     if (!order_id) return { error: "Order ID not found" };
 
-    const response = await fetch(`${API_ENDPOINT}/auth/order/${order_id}/USERID`, {
+    const response = await fetch(`${API_ENDPOINT}/auth/order/${order_id}`, {
       method: "GET",
-      headers: { Authorization: `Bearer ` },
+      headers: { Cookie: `auth__token=${auth_token}` },
       next: { tags: ["order"] },
     });
 
     if (!response.ok) return { error: "Failed to retrieve order" };
 
     const data = await response.json();
+
     return data.order;
   } catch (error) {
     console.log("Something went wrong while fetching the order:", error);
@@ -53,8 +53,8 @@ export async function getOrderServerAction({ order_id }: { order_id: string }) {
 // CUSTOMER RATING ORDER SERVER ACTION
 export async function createRatingServerAction({ values, order_id }: { values: any; order_id: string }) {
   try {
-
- 
+    
+    const auth_token = await getSessionNextAuth();
     const formData = new FormData();
     const { order_rating, variant_id, order_rating_text, order_rating_image } = values;
 
@@ -67,9 +67,10 @@ export async function createRatingServerAction({ values, order_id }: { values: a
         formData.append(`order_rating_image[${index}]`, file);
       });
     }
-    const response = await fetch(`${API_ENDPOINT}/auth/rating/${variant_id}/${order_id}/USERID`, {
+
+    const response = await fetch(`${API_ENDPOINT}/auth/rating/product/${variant_id}/${order_id}`, {
       method: "POST",
-      headers: { Authorization: `Bearer ` },
+      headers: { Cookie: `auth__token=${auth_token}` },
       body: formData,
     });
 
@@ -85,15 +86,14 @@ export async function createRatingServerAction({ values, order_id }: { values: a
 // CUSTOMER CANCELLED ORDER SERVER ACTION
 export async function cancelledOrderServerAction({ reason, order_id }: { reason: CancelledOrderReason; order_id: string }) {
   try {
+    const auth_token = await getSessionNextAuth();
 
-
- 
     if (!order_id || !reason) return { error: !order_id ? "Order ID not found" : "Reason not found" };
 
-    const response = await fetch(`${API_ENDPOINT}/auth/order/cancelled/${order_id}/USERID`, {
+    const response = await fetch(`${API_ENDPOINT}/auth/order/cancelled/${order_id}`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer `,
+        Cookie: `auth__token=${auth_token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ reason }),
@@ -115,12 +115,11 @@ export async function cancelledOrderServerAction({ reason, order_id }: { reason:
 // UPDATE CUSTOMER ORDER RECEIVED SERVICE ACTION
 export async function receivedOrderServerAction({ order_id }: { order_id: string }) {
   try {
-
-
+    const auth_token = await getSessionNextAuth();
  
-    const response = await fetch(`${API_ENDPOINT}/auth/order/received/${order_id}/USERID`, {
+    const response = await fetch(`${API_ENDPOINT}/auth/order/received/${order_id}`, {
       method: "PUT",
-      headers: { Authorization: `Bearer ` },
+      headers: { Cookie: `auth__token=${auth_token}` },
     });
 
     if (!response.ok) return { error: "Failed to received order, please try again later" };

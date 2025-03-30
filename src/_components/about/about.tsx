@@ -16,7 +16,7 @@ export default function AboutContainer() {
           About Us.
         </h1>
         <p className="text-slate-500 py-4 text-sm">
-          Welcome to Bella & Pepper, your destination for authentic Korean food
+          Welcome to Seoul Mart Korean Store, your destination for authentic Korean food
           and beverages! Our passion for Korean cuisine drives us to offer a
           carefully curated selection of high-quality ingredients, snacks, and
           drinks.

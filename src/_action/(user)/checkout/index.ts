@@ -1,6 +1,7 @@
 "use server";
 
 import { API_ENDPOINT } from "@/_constant/constant";
+import { getSessionNextAuth } from "@/lib/session";
 import { redirect } from "next/navigation";
 
 export async function createCheckoutServerAction(payload: {
@@ -8,15 +9,15 @@ export async function createCheckoutServerAction(payload: {
   checkout: any;
   location: any;
 }) {
-
+  const auth_token = await getSessionNextAuth();
 
   const response = await fetch(
-    `${API_ENDPOINT}/auth/checkout/USERID`,
+    `${API_ENDPOINT}/auth/checkout`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer `,
+        Cookie: `auth__token=${auth_token}`,
       },
       body: JSON.stringify({
         information: payload.information,

@@ -10,7 +10,7 @@ import PurchaseRatingModal from "./purchase-rating-modal";
 export default function PurchaseActionButton({ order }: { order: IOrders }) {
   const allItemsRated = order.tbl_items.every((item: IItems) => order.tbl_rating.some((rating: IRating) => rating.variant_id === item.variant_id));
 
-  const deliveredStatus = order.tbl_order_status.find((status: IOrderStatus) => status.tbl_status.status_name === "DELIVERED");
+  const deliveredStatus = order.tbl_order_status.find((status: IOrderStatus) => status.status === "DELIVERED");
 
   let isRefundAvailable = false;
   
@@ -28,13 +28,13 @@ export default function PurchaseActionButton({ order }: { order: IOrders }) {
 
       {deliveredStatus && isRefundAvailable && <Button>Request Refund</Button>}
 
-      {order.tbl_order_status.some((status: IOrderStatus) => status.tbl_status.status_name === "PAID") &&
-        !order.tbl_order_status.some((status: IOrderStatus) => status.tbl_status.status_name === "SHIPPED") && !order.tbl_order_status.some((status: IOrderStatus) => status.tbl_status.status_name === "CANCELLED") && (
+      {order.tbl_order_status.some((status: IOrderStatus) => status.status === "PAID") &&
+        !order.tbl_order_status.some((status: IOrderStatus) => status.status === "SHIPPED") && !order.tbl_order_status.some((status: IOrderStatus) => status.status === "CANCELLED") && (
           <PurchaseCancelOrder order_id={order.order_id} />
         )}
 
-      {order.tbl_order_status.some((status: IOrderStatus) => status.tbl_status.status_name === "SHIPPED") &&
-        !order.tbl_order_status.some((status: IOrderStatus) => status.tbl_status.status_name === "DELIVERED") && (
+      {order.tbl_order_status.some((status: IOrderStatus) => status.status === "SHIPPED") &&
+        !order.tbl_order_status.some((status: IOrderStatus) => status.status === "DELIVERED") && (
           <PurchaseOrderReceivedModal order_id={order.order_id} />
         )}
     </div>

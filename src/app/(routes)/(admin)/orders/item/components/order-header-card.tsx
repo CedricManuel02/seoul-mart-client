@@ -25,12 +25,12 @@ export default function OrderHeaderCard({ order }: { order: IOrders }) {
         </p>
         <div className="flex items-center justify-between gap-2">
           <Input
-            defaultValue={order.tbl_order_payment.payment_unique_id}
+            defaultValue={order.tbl_order_payment.payment_intent_id}
             disabled
           />
           <Button
             onClick={() =>
-              copyToClipboard(order.tbl_order_payment.payment_unique_id)
+              copyToClipboard(order.tbl_order_payment.payment_intent_id)
             }
             variant={"outline"}
           >

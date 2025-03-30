@@ -12,6 +12,7 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
+  blackList: ["variant"]
 };
 
 const reducer = combineReducers({

@@ -1,4 +1,4 @@
-import { IOrders } from "@/_interface/interface";
+import { IOrders, IOrderStatus } from "@/_interface/interface";
 import { formatDateWithTime } from "@/_utils/helper";
 import { Check } from "lucide-react";
 import React from "react";
@@ -15,7 +15,7 @@ export default function OrderProductTimeline({ order }: { order: IOrders }) {
               new Date(b.order_status_date_created).getTime() -
               new Date(a.order_status_date_created).getTime()
           )
-          .map((status: any, index: number) => (
+          .map((status: IOrderStatus, index: number) => (
             <li
               className={`${index === 0 ? "opacity-100" : "opacity-75"}`}
               key={status.order_status_id}
@@ -24,10 +24,10 @@ export default function OrderProductTimeline({ order }: { order: IOrders }) {
                 <Check size={16} className="text-green-500" />
                 <div className="flex flex-col">
                   <h3 className="text-slate-700 text-sm font-medium">
-                    {status.tbl_status.status_name}
+                    {status.status.replace("_", " ")}
                   </h3>
                   <p className="text-slate-500 text-xs">
-                    {formatDateWithTime(status.order_status_date_created)}
+                    {formatDateWithTime(status.order_status_date_created.toString())}
                   </p>
                   {status.tbl_order_status_images.length > 0 && (
                     <OrderProductShippedModal order={order}/>

@@ -6,10 +6,15 @@ const protectedRoutes = ["/orders", "/product", "/product/create", "/product/upd
 
 const publicRoutes = ["/", "/login", "/register", "/products", "/policy"];
 
+
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request, secret: process.env.AUTH_SECRET });
   const { pathname } = request.nextUrl;
   
+  if (!token && (pathname.startsWith("/purchase/item") || pathname.startsWith("/purchase"))) {
+    return NextResponse.redirect(new URL("/", request.url)); 
+  }
+
   if (!token && protectedRoutes.includes(pathname)) {
     return NextResponse.redirect(new URL("/", request.url)); 
   }
@@ -17,7 +22,6 @@ export async function middleware(request: NextRequest) {
   if(!token && (pathname === "/profile" || pathname === "/reset-profile-password" )) {
     return NextResponse.redirect(new URL("/", request.url));
   }
-
 
   if ((pathname === "/login" || pathname === "/register") && token) {
     return NextResponse.redirect(new URL("/", request.url));

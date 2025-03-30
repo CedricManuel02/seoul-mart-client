@@ -15,8 +15,8 @@ const getStatusIcon = (status: string) => {
       return <PackageOpen size={DEFAULT_ICON_SIZE} className="text-orange-500" />;
     case "CANCELLED":
       return <XCircle size={DEFAULT_ICON_SIZE} className="text-red-500" />;
-    case "REVIEW":
-      return <Star size={DEFAULT_ICON_SIZE} className="text-yellow-500" />;
+    case "RATING":
+      return <Star size={DEFAULT_ICON_SIZE} className="text-pink-500" />;
     default:
       return null;
   }

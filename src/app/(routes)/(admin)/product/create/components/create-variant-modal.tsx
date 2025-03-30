@@ -1,6 +1,6 @@
 "use client";
 import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from "@/_constant/constant";
-import { IVariantCreate, IVariantCreateModal } from "@/_interface/interface";
+import { IVariantCreate } from "@/_interface/interface";
 import { addVariant } from "@/_redux/features/variant-slice";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,7 +21,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -75,7 +74,6 @@ export default function CreateVariantModal() {
             variant_name: values.variant_name,
             variant_price: values.variant_price,
             variant_stocks: values.variant_stocks,
-            variant_image: base64String,
             variant_image_url: file,
           },
         })

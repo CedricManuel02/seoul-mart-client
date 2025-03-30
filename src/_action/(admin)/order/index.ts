@@ -2,16 +2,15 @@
 
 import { API_ENDPOINT } from "@/_constant/constant";
 import { toast } from "@/hooks/use-toast";
+import { getSessionNextAuth } from "@/lib/session";
 import { revalidateTag } from "next/cache";
-import { redirect } from "next/navigation";
 
 export async function getOrdersServerAction() {
-    
-
+    const auth_token = await getSessionNextAuth();
     const response = await fetch(`${API_ENDPOINT}/auth/orders`, {
         method: "GET",
         headers: {
-            "Authorization" : `Bearer `
+            Cookie: `auth__token=${auth_token}`
         }
     });
 
@@ -21,7 +20,7 @@ export async function getOrdersServerAction() {
 }
 
 export async function getOrderItemServerAction(payload: {order_id: string}) {
- 
+    const auth_token = await getSessionNextAuth();
     if(!payload.order_id){
       toast({
         title: "Order not found",
@@ -32,7 +31,7 @@ export async function getOrderItemServerAction(payload: {order_id: string}) {
     const response = await fetch(`${API_ENDPOINT}/auth/item/order/${payload.order_id}`, {
       method: "GET",
       headers: {
-          "Authorization": `Bearer `
+          Cookie: `auth__token=${auth_token}`
       }, next: {
       tags: ["order"]
       }
@@ -48,7 +47,7 @@ export async function createShippedServerAction(payload: {
   shipped_details: any;
 }) {
 
-
+  const auth_token = await getSessionNextAuth();
   const formData = new FormData();
 
   formData.append("delivery_company", payload.shipped_details.delivery_company);
@@ -79,11 +78,11 @@ export async function createShippedServerAction(payload: {
   }
 
   const response = await fetch(
-    `${API_ENDPOINT}/auth/shipped/${payload.order_number}/userID`,
+    `${API_ENDPOINT}/auth/shipped/${payload.order_number}`,
     {
       method: "POST",
       headers: {
-        "Authorization": `Bearer `,
+        Cookie: `auth__token=${auth_token}`,
       },
       body: formData,
     }

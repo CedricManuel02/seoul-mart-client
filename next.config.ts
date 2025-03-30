@@ -16,6 +16,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "static-00.iconduck.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "res.cloudinary.com",
         pathname: "**",
       },

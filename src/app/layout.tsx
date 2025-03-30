@@ -6,9 +6,10 @@ import NavigationLinkContainer from "@/_components/shared/sub-navigation-link/na
 import { ReduxProvider } from "@/_redux/provider";
 import Footer from "@/_components/shared/footer/footer";
 import SessionProvider from "./api/auth/[...nextauth]/provider/session-provider";
+
 export const metadata: Metadata = {
   title: "Seoul Mart Korean Store",
-  description: "",
+  description: "Seoul mart korean store",
 };
 export default function RootLayout({
   children,
