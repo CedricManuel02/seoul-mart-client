@@ -30,7 +30,7 @@ export default function OrderProductShippedModal({ order }: { order: IOrders }) 
         </DialogHeader>
         <div  className="flex items-center gap-2 ">
           {order.tbl_order_status
-            .filter((item: IOrderStatus) => item.tbl_status.status_name === "SHIPPED")
+            .filter((item: IOrderStatus) => item.status === "SHIPPED")
             .flatMap((item: IOrderStatus) => item.tbl_order_status_images)
             .map((status_images: IOrderStatusImages, index: number) => (
               <div key={index} className="border rounded">

@@ -10,6 +10,7 @@ export default function Footer() {
         <footer className="footer text-base-content border-t px-10 py-4">
           <aside className="grid-flow-col items-center">
             <Image
+              className="bg-blend-color-burn"
               src={logo}
               alt="logo"
               width={50}
@@ -17,11 +18,11 @@ export default function Footer() {
               loading="lazy"
             />
             <p className="font-medium text-slate-700">
-              Seoul <span className="text-green-500">Store's</span>
+               <span className="text-green-500 text-xl">Seoul Mart's</span>
               <br />
               <span className="text-slate-500">Providing quality korean food and beverages</span>
               <br />
-              <span className="text-slate-500">Created by <Link className="text-green-500" href={"/"}>@cedricmanuel</Link></span>
+              <span className="text-slate-500">Created by <Link className="text-green-500" href={"http://cedricmanuel.netlify.app"}>@cedricmanuel</Link></span>
             </p>
           </aside>
           <nav className="md:place-self-center md:justify-self-end">

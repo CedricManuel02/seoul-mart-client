@@ -1,6 +1,7 @@
 import { IOrders } from "@/_interface/interface";
 import { calculateProductTotal, formatCurrency, formatTransactionFee } from "@/_utils/helper";
 import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
 import React from "react";
 
 
@@ -44,10 +45,7 @@ export default async function OrderProductSummary({order,}: {order: IOrders;}) {
       <div className="w-full flex items-center justify-between">
         <h4 className="text-sm ">Mode of Payment</h4>
         <p className="font-medium text-sm text-slate-700">
-          {order.tbl_order_payment.payment_method
-            .charAt(0)
-            .toUpperCase() +
-            order.tbl_order_payment.payment_method.slice(1)}
+          {order.tbl_order_payment.payment_method === "card" && (<Image src={"https://static-00.iconduck.com/assets.00/visa-icon-2048x1313-o6hi8q5l.png"} className="rounded object-cover" alt="card" loading="lazy" width={40} height={40}/>)}
         </p>
       </div>
       <Separator orientation="horizontal" />

@@ -47,7 +47,7 @@ export default async function OrderItem({
             </h4>
           </div>
           <Badge variant={"default"} className="bg-green-100 text-green-500 hover:bg-green-100 hover:text-green-500">
-            {order.tbl_order_status[0].tbl_status.status_name}
+            {order.tbl_order_status[0].status}
           </Badge>
         </div>
         {/* Delivery Information */}

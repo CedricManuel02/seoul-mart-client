@@ -58,7 +58,7 @@ export default function CreateForm(payload: any) {
       }
 
       const arrayOfImages: File[] = [];
-      const variantsWithoutImage = variant.map(({ variant_image, variant_image_url, ...rest }) => {
+      const variantsWithoutImage = variant.map(({ variant_image_url, ...rest }) => {
         if (variant_image_url instanceof File) {
           arrayOfImages.push(variant_image_url);
         }

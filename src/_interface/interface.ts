@@ -64,7 +64,6 @@ export interface IVariantCreateModal {
   variant_name: string;
   variant_price: string;
   variant_stocks: string;
-  variant_image:  string | null;
   variant_image_url:  File | null;
 }
 
@@ -167,16 +166,10 @@ export interface IOrderInformation  extends IOrderBase{
 export interface IOrderStatus  extends IOrderBase {
   order_status_id: string;
   status_id: string;
+  status: string;
   order_status_date_created: Date;
-  tbl_status: IStatus;
   tbl_order_status_images: IOrderStatusImages[];
 }
-
-export interface IStatus {
-  status_id: string;
-  status_name: string;
-}
-
 export interface IOrderStatusImages {
   order_status_image_id: string;
   order_status_id: string;
@@ -262,8 +255,7 @@ export interface INotifications {
   notifications_read : boolean;
   user_sender_id: string;
   user_receiver_id: string;
-  status_id: string;
-  tbl_status: IStatus;
+  status: string;
 }
 
 // ACCOUNT

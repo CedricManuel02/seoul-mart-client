@@ -5,6 +5,7 @@ import ButtonLoading from "@/_components/shared/button-loading/button-loading";
 import { ICheckoutArray, ILocation } from "@/_interface/interface";
 import { clearSelectedItems } from "@/_redux/features/cart-slice";
 import {
+  clearCheckoutItem,
   clearCheckoutTotal,
   resetShippingFee,
   setShippingFee,
@@ -150,7 +151,7 @@ export default function CheckoutForm() {
           description: "Your location is not available for delivery",
         });
       }
-      const response = await createCheckoutServerAction({
+      await createCheckoutServerAction({
         information: values,
         checkout: checkout,
         location: {
@@ -164,9 +165,6 @@ export default function CheckoutForm() {
           },
         },
       });
-
-      dispatch(clearSelectedItems());
-      dispatch(clearCheckoutTotal());
     } catch (err) {
       console.error("Unexpected error:", err);
       toast({

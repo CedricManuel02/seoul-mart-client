@@ -3,8 +3,6 @@
 import { API_ENDPOINT, OK_STATUS_CODE } from "@/_constant/constant";
 import { getSessionNextAuth } from "@/lib/session";
 import { revalidateTag } from "next/cache";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 // GET ALL THE PRODUCTS IN THE DATABASE
 export async function getProductsServerAction() {
@@ -83,13 +81,15 @@ export async function createProductServerAction(values: FormData) {
   try {
     const auth_token = await getSessionNextAuth();
 
-    const response = await fetch(`${API_ENDPOINT}/product`, {
+    const response = await fetch(`${API_ENDPOINT}/auth/product`, {
       method: "POST",
       headers: {
         Cookie: `auth__token=${auth_token}`,
       },
       body: values,
     });
+
+
 
     if (!response.ok) return { error: response.statusText };
 

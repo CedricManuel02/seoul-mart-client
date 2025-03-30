@@ -35,9 +35,9 @@ export default async function Purchased() {
                 <div className="flex items-center justify-center gap-2 text-sm">
                   <div className="p-1 bg-slate-200 rounded-full">
                   <NavigationNotificationIcon
-                    status={order.tbl_order_status[0].tbl_status.status_name}
+                    status={order.tbl_order_status[0].status}
                   /></div>{" "}
-                  <p>{order.tbl_order_status[0].tbl_status.status_name}</p>
+                  <p>{order.tbl_order_status[0].status}</p>
                 </div>
               </div>
               <div className="w-full ">

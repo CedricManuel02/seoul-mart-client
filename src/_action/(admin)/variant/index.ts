@@ -3,8 +3,6 @@
 import { API_ENDPOINT, OK_STATUS_CODE } from "@/_constant/constant";
 import { getSessionNextAuth } from "@/lib/session";
 import { revalidateTag } from "next/cache";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 // GET PRODUCT INFO (UPDATE PRODUCT PURPOSE)
 export async function getProductServerAction(product_id: string) {
@@ -20,7 +18,9 @@ export async function getProductServerAction(product_id: string) {
       },
       next: { tags: ["product"] },
     });
+
     const data = await response.json();
+
     if (!response.ok) return { error: data.message };
 
     if (response.status !== OK_STATUS_CODE) return { error: data.message };

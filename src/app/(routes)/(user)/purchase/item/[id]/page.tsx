@@ -19,7 +19,7 @@ export default async function PurchasedItem({ params }: { params: { id: string }
 
   if (!order) return <Custom404 />;
 
-  const totalItems = order.tbl_items.reduce((sum: number, item: any) => sum + Number(item.item_product_price_at_time_purchase) * Number(item.item_quantity),0);
+  const totalItems = order.tbl_items.reduce((sum: number, item: IItems) => sum + Number(item.item_product_price_at_time_purchase) * Number(item.item_quantity),0);
 
   const total = totalItems + order.order_shipping_fee;
 
@@ -46,7 +46,7 @@ export default async function PurchasedItem({ params }: { params: { id: string }
             <div className="flex flex-col items-center sm:items-start justify-center space-y-4 z-10">
               <div
                 className={`${
-                  order.tbl_order_status.some((item: any) => item.tbl_status.status_name === "PLACED ORDER") ? "bg-green-500" : "bg-slate-400"
+                  order.tbl_order_status.some((item: IOrderStatus) => item.status.replace("_", " ") === "PLACED ORDER") ? "bg-green-500" : "bg-slate-400"
                 } w-7 h-7 rounded-full text-white flex items-center justify-center`}
               >
                 <Check size={14} />
@@ -56,14 +56,14 @@ export default async function PurchasedItem({ params }: { params: { id: string }
             <div className="flex flex-col items-center justify-center space-y-4 z-10">
               <div
                 className={`${
-                  order.tbl_order_status.some((item: any) => item.tbl_status.status_name === "PAID") ? "bg-green-500" : "bg-slate-400"
+                  order.tbl_order_status.some((item: IOrderStatus) => item.status === "PAID") ? "bg-green-500" : "bg-slate-400"
                 } w-7 h-7 rounded-full text-white flex items-center justify-center`}
               >
                 <Check size={14} />
               </div>
               <p className="text-slate-700 text-sm">Paid</p>
             </div>
-           {order.tbl_cancelled_order && order.tbl_order_status.some((item: any) => item.tbl_status.status_name === "CANCELLED") && (
+           {order.tbl_cancelled_order && order.tbl_order_status.some((item: IOrderStatus) => item.status === "CANCELLED") && (
            <div className="flex flex-col items-center justify-center space-y-4 z-10">
               <div
                 className="bg-red-500 w-7 h-7 rounded-full text-white flex items-center justify-center"
@@ -76,7 +76,7 @@ export default async function PurchasedItem({ params }: { params: { id: string }
             <div className="flex flex-col items-center justify-center space-y-4 z-10">
               <div
                 className={`${
-                  order.tbl_order_status.some((item: any) => item.tbl_status.status_name === "SHIPPED") ? "bg-green-500" : "bg-slate-400"
+                  order.tbl_order_status.some((item: IOrderStatus) => item.status === "SHIPPED") ? "bg-green-500" : "bg-slate-400"
                 } w-7 h-7 rounded-full text-white flex items-center justify-center`}
               >
                 <Check size={14} />
@@ -86,7 +86,7 @@ export default async function PurchasedItem({ params }: { params: { id: string }
             <div className="flex flex-col items-center sm:items-end justify-center space-y-4 z-10">
               <div
                 className={`${
-                  order.tbl_order_status.some((item: any) => item.tbl_status.status_name === "DELIVERED") ? "bg-green-500" : "bg-slate-400"
+                  order.tbl_order_status.some((item: IOrderStatus) => item.status === "DELIVERED") ? "bg-green-500" : "bg-slate-400"
                 } w-7 h-7 rounded-full text-white flex items-center justify-center`}
               >
                 <Check size={14} />
@@ -165,13 +165,13 @@ export default async function PurchasedItem({ params }: { params: { id: string }
               <ul className="text-slate-500 text-sm font-medium list-disc px-4">
                 {order.tbl_order_status.map((status: IOrderStatus) => (
                   <li key={status.order_status_id}>
-                    <h3 className="font-medium text-slate-700">{status.tbl_status.status_name} {status.tbl_status.status_name === "CANCELLED" && order.tbl_cancelled_order.cancelled_reason}</h3>
+                    <h3 className="font-medium text-slate-700">{status.status} {status.status === "CANCELLED" && order.tbl_cancelled_order.cancelled_reason}</h3>
                     <p>{formatDateWithTime(String(status.order_status_date_created))}</p>
                   </li>
                 ))}
               </ul>
             </div>
-            {order.tbl_order_status.some((item: IOrderStatus) => item.tbl_status.status_name === "SHIPPED") && (
+            {order.tbl_order_status.some((item: IOrderStatus) => item.status === "SHIPPED") && (
               <div className="w-full">
                 <h3 className="font-medium text-sm text-slate-800 py-2">Delivery Information</h3>
                 <div className="flex items-center gap-2">

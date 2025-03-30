@@ -116,7 +116,7 @@ export default function NavigationUserNotification({ session }: { session: any }
                 } flex items-start gap-2 p-2 rounded`}
               >
                 <div className="flex items-center justify-center bg-slate-200 p-1 rounded-full">
-                  <NavigationNotificationIcon status={notification.tbl_status.status_name} />
+                  <NavigationNotificationIcon status={notification.status} />
                 </div>
                 <div>
                   <h3 className="text-xs font-medium">{notification.notifications_title}</h3>
