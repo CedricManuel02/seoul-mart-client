@@ -1,7 +1,6 @@
 import { getUserOrderServerAction } from "@/_action/(user)/order";
 import { formatCurrency } from "@/_utils/helper";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { ShoppingBasket, Store } from "lucide-react";
 import Image from "next/image";
 import React from "react";
@@ -13,12 +12,13 @@ export default async function Purchased() {
   const order: IOrders[] = await getUserOrderServerAction();
   return (
     <div className="h-auto min-h-screen w-full bg-slate-50 py-4 px-2">
-      <header className="text-sm w-full lg:w-5/12 m-auto h-20 flex flex-col justify-center">
+      <div className="w-full md:w-10/12 lg:w-7/12 xl:w-5/12 m-auto">
+      <header className="text-sm h-20 flex flex-col justify-center">
         <h2 className="font-medium">Purchased Products</h2>
         <p className="text-slate-500">Your recent purchased products</p>
       </header>
       {order.length > 0 ? (
-        <div className="flex flex-col space-y-2 w-full lg:w-5/12 m-auto">
+        <div className="flex flex-col space-y-2">
           {order.map((order: IOrders) => (
             <div
               key={order.order_id}
@@ -41,9 +41,8 @@ export default async function Purchased() {
                 </div>
               </div>
               <div className="w-full ">
-                {order.tbl_items.map((item: any, index: number) => (
+                {order.tbl_items.map((item: any) => (
                   <div key={item.item_id}>
-                    {index === 1 && <Separator orientation={"horizontal"} />}
                     <figcaption className="w-full flex items-start justify-start space-x-2 py-2">
                       <figure>
                         <Image
@@ -96,6 +95,7 @@ export default async function Purchased() {
           </Button>
         </div>
       )}
+      </div>
     </div>
   );
 }

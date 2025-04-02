@@ -19,7 +19,7 @@ interface IItemActionButton {
 export default function ItemActionButton({ session, product_id, selected_variant_id, item_quantity }: IItemActionButton) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState<boolean>(false);
-
+  
   const handleAddingToCart = useCallback(async (product_id: string) => {
     try {
       setLoading(true);
@@ -34,7 +34,7 @@ export default function ItemActionButton({ session, product_id, selected_variant
       }
 
       const payload = { product_id, selected_variant_id, item_quantity };
-
+      
       const response = await addToCartServerAction(payload);
 
       if(response.status !== 201) {
@@ -61,7 +61,7 @@ export default function ItemActionButton({ session, product_id, selected_variant
     } finally {
       setLoading(false);
     }
-  }, [selected_variant_id]);
+  }, [selected_variant_id, item_quantity]);
   return (
     <div className="my-4 flex flex-wrap items-center gap-2">
       <Button onClick={() => handleAddingToCart(product_id)} className="w-full md:w-2/12" variant={"outline"} disabled={loading}>
