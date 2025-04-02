@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,13 +12,13 @@ import ProductStarRating from "@/_components/product/product-star-rating";
 import ItemActionButton from "./item-action-button";
 import { convertPriceToDiscount, formatCurrency } from "@/_utils/helper";
 
-export default function ItemWrapper({ item, session }: { item: IProduct, session: any}) {
+export default function ItemWrapper({ item, session }: { item: IProduct; session: any }) {
   const [quantity, setQuantity] = useState<number>(1);
   const [discountedPrice, setDiscountedPrice] = useState<string>("");
   const [selectedImage, setSelectedImage] = useState<IVariants>(item.tbl_variants[0]);
   const [selectedVariant, setSelectedVariant] = useState<IVariants>(item.tbl_variants[0]);
   const [stock, setStock] = useState<number>(0);
-  
+
   useEffect(() => {
     async function updateSelectedVariant() {
       if (selectedVariant) {
@@ -33,22 +33,21 @@ export default function ItemWrapper({ item, session }: { item: IProduct, session
     updateSelectedVariant();
   }, [selectedVariant]);
 
-  const handleVariantChange = (variant_id: string) => {
-
+  const handleVariantChange = useCallback((variant_id: string) => {
     const selected = item.tbl_variants.find((variant) => variant.variant_id === variant_id);
     if (selected) {
       setQuantity(1);
       setSelectedImage(selected);
       setSelectedVariant(selected);
     }
-  };
+  }, [item.tbl_variants]);
 
-  const handleVariantImageChange = (variant_id: string) => {
+  const handleVariantImageChange = useCallback((variant_id: string) => {
     const selected = item.tbl_variants.find((variant) => variant.variant_id === variant_id);
     if (selected) {
       setSelectedImage(selected);
     }
-  };
+  }, []);
 
   const handleDecrement = () => {
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
@@ -118,15 +117,16 @@ export default function ItemWrapper({ item, session }: { item: IProduct, session
           <Badge variant={"outline"}>
             <div className="flex items-center gap-2">
               <Image
-                src={"https://logos-download.com/wp-content/uploads/2020/06/GCash_Logo.png"}
-                alt="Gcash"
+                src={"https://static-00.iconduck.com/assets.00/visa-icon-2048x1313-o6hi8q5l.png"}
+                alt="Card"
                 className="h-auto w-auto rounded"
                 width={25}
                 height={100}
               />
-              <p>Gcash</p>
+              <p>Card</p>
             </div>
           </Badge>
+          <div className="text-slate-500 text-sm text-justify flex"><p>Secured payment powered by</p><Image src={"https://vikwp.com/images/plugins/stripe.png"} alt="Stripe" width={50} height={50}/></div>
         </div>
         <div className="flex flex-col md:flex-row md:items-center md:gap-2">
           {/* Variant Selection */}

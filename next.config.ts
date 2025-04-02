@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "vikwp.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "api.dicebear.com",
         pathname: "/9.x/initials",
       },

@@ -33,7 +33,7 @@ export default function AboutContainer() {
           </div>
           <div className="flex items-center gap-2">
             <Mail className="h-8 p-2 w-8 rounded cursor-pointer bg-green-200 text-green-500" />
-            <p className="text-slate-500">bellaandpepper@gmail.com</p>
+            <p className="text-slate-500">seoulmart@gmail.com</p>
           </div>
           <div className="flex items-center gap-2">
             <MapPin className="h-8 p-2 w-8 rounded cursor-pointer bg-green-200 text-green-500" />

@@ -7,21 +7,6 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 
-const chartData = [
-    { month: "January", sales: 186 },
-    { month: "February", sales: 305 },
-    { month: "March", sales: 237 },
-    { month: "April", sales: 73 },
-    { month: "May", sales: 209 },
-    { month: "June", sales: 214 },
-    { month: "July", sales: 0 },
-    { month: "August", sales: 14 },
-    { month: "September", sales: 564 },
-    { month: "October", sales: 254 },
-    { month: "November", sales: 114 },
-    { month: "December", sales: 284 },
-]
-
 const chartConfig = {
     desktop: {
       label: "Desktop",
@@ -33,7 +18,7 @@ const chartConfig = {
     },
 } satisfies ChartConfig
 
-export default function DashboardBarcharts() {
+export default function DashboardBarcharts({chartData} : {chartData: any}) {
     return (
         <ChartContainer config={chartConfig} className="flex justify-center items-center">
             <BarChart accessibilityLayer data={chartData} className="w-full mx-auto">
