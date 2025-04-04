@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -10,38 +10,25 @@ import {
   SortingState,
   useReactTable,
   VisibilityState,
-} from "@tanstack/react-table"
-import Link from "next/link";
+} from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import React from "react"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import React from "react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { toast } from "@/hooks/use-toast";
-import { Files, MoreHorizontal } from "lucide-react";
-import { deleteProductServerAction, retrieveProductServerAction } from "@/_action/(admin)/product";
-import { IOrders, IProduct } from "@/_interface/interface";
+import { MoreHorizontal } from "lucide-react";
+import { IOrders } from "@/_interface/interface";
 import { OrderExportSales } from "./order-export-sales";
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
 
 export default function OrderTable({ columns, data }: DataTableProps<IOrders, any>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
     data,
@@ -61,33 +48,21 @@ export default function OrderTable({ columns, data }: DataTableProps<IOrders, an
       columnVisibility,
       rowSelection,
     },
-  })
- 
+  });
+
   return (
     <div className="w-11/12 xl:w-9/12 min-h-screen h-auto m-auto py-5 flex flex-col gap-2">
       <header className="bg-white p-4 rounded-md shadow flex flex-col items-start md:flex-row justify-between md:items-center">
-        <h2 className="text-slate-700 font-semibold text-md lg:text-xl">
-          Orders
-        </h2>
+        <h2 className="text-slate-700 font-semibold text-md lg:text-xl">Orders</h2>
         <div className="flex items-center gap-2">
-          <Input type="text" placeholder="Search Order Number..."
+          <Input
+            type="text"
+            placeholder="Search Order Number..."
             value={(table.getColumn("order_number")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("order_number")?.setFilterValue(event.target.value)
-            } className="w-full lg:min-w-[250px]" />
-            <OrderExportSales/>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant={"outline"}>
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem>Delete</DropdownMenuItem>
-              <DropdownMenuItem>Retrieve</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            onChange={(event) => table.getColumn("order_number")?.setFilterValue(event.target.value)}
+            className="w-full lg:min-w-[250px]"
+          />
+          <OrderExportSales />
         </div>
       </header>
       <div className="rounded-md border bg-white p-4 whitespace-nowrap">
@@ -98,14 +73,9 @@ export default function OrderTable({ columns, data }: DataTableProps<IOrders, an
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -113,14 +83,9 @@ export default function OrderTable({ columns, data }: DataTableProps<IOrders, an
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
               ))
@@ -134,30 +99,19 @@ export default function OrderTable({ columns, data }: DataTableProps<IOrders, an
           </TableBody>
         </Table>
       </div>
-     <div className="py-4 flex flex-col md:flex-row justify-between items-center">
-     <div className="text-sm flex text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+      <div className="py-4 flex flex-col md:flex-row justify-between items-center">
+        <div className="text-sm flex text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
-      <div className="flex items-center justify-end space-x-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
+        <div className="flex items-center justify-end space-x-2">
+          <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+            Previous
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+            Next
+          </Button>
+        </div>
       </div>
-     </div>
     </div>
-  )
+  );
 }

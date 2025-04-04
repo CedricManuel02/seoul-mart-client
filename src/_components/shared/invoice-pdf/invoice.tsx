@@ -1,14 +1,7 @@
 "use client";
 import React from "react";
-import {
-  Page,
-  Text,
-  View,
-  Document,
-  StyleSheet,
-  Image,
-} from "@react-pdf/renderer";
-import { calculateProductTotal, formatDate} from "@/_utils/helper";
+import { Page, Text, View, Document, StyleSheet, Image } from "@react-pdf/renderer";
+import { calculateProductTotal, formatDate } from "@/_utils/helper";
 
 // Create styles
 const styles = StyleSheet.create({
@@ -64,7 +57,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   tableCol: {
-    width: "20%", 
+    width: "20%",
     borderStyle: "solid",
     borderWidth: 1,
     borderLeftWidth: 0,
@@ -96,16 +89,10 @@ export const MyDocument = ({ order }: { order: any }) => {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.flex}>
-            <Image
-               style={styles.image}
-              src={
-                "https://png.pngtree.com/png-vector/20220708/ourmid/pngtree-fast-food-logo-png-image_5763171.png"
-              }
-            />
-            <Text style={styles.invoiceTitle}>Bella & Pepper Korean Store</Text>
+            <Text style={styles.invoiceTitle}>Seoul Mart Korean Store</Text>
           </View>
           <Text>Soldiers Hills Phase IV Almond Drive, Molino VI, Bacoor</Text>
-          <Text>bellaandpepper@gmail.com</Text>
+          <Text>seoulmart@gmail.com</Text>
           <Text>{formatDate(date.toString())}</Text>
         </View>
 
@@ -115,13 +102,11 @@ export const MyDocument = ({ order }: { order: any }) => {
             <Text style={styles.bold}>Ship To:</Text>
             <Text>Order # {order.order_number}</Text>
             <Text>
-              {order.tbl_order_information[0].order_information_first_name}{" "}
-              {order.tbl_order_information[0].order_information_last_name}
+              {order.tbl_order_information[0].order_information_first_name} {order.tbl_order_information[0].order_information_last_name}
             </Text>
             <Text>{order.tbl_order_information[0].order_address_complete}</Text>
             <Text>
-              {order.tbl_order_information[0].order_address_cities}{" "}
-              {order.tbl_order_information[0].order_address_province}
+              {order.tbl_order_information[0].order_address_cities} {order.tbl_order_information[0].order_address_province}
             </Text>
           </View>
         </View>
@@ -142,21 +127,14 @@ export const MyDocument = ({ order }: { order: any }) => {
             {/* Table Rows */}
             {order.tbl_items.map((item: any, index: number) => (
               <View style={styles.tableRow} key={index}>
+                <Text style={styles.tableCol}>{item.tbl_variant.tbl_products.product_upc_number}</Text>
                 <Text style={styles.tableCol}>
-                  {item.tbl_variant.tbl_products.product_upc_number}
-                </Text>
-                <Text style={styles.tableCol}>
-                  <Image
-                    src={item.item_product_image}
-                    style={styles.image}
-                  />
+                  <Image src={item.item_product_image} style={styles.image} />
                 </Text>
                 <Text style={styles.tableCol}>{item.item_product_name}</Text>
                 <Text style={styles.tableCol}>{item.item_variant_name}</Text>
                 <Text style={styles.tableCol}>x{item.item_quantity}</Text>
-                <Text style={styles.tableCol}>
-                  PHP {item.item_product_price_at_time_purchase}
-                </Text>
+                <Text style={styles.tableCol}>PHP {item.item_product_price_at_time_purchase}</Text>
               </View>
             ))}
             {/* Total Row */}
@@ -174,11 +152,7 @@ export const MyDocument = ({ order }: { order: any }) => {
               >
                 Shipping Fee:
               </Text>
-              <Text
-                style={[styles.tableCol, { width: "20%", fontWeight: "bold" }]}
-              >
-                PHP {order.order_shipping_fee}
-              </Text>
+              <Text style={[styles.tableCol, { width: "20%", fontWeight: "bold" }]}>PHP {order.order_shipping_fee}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text
@@ -194,11 +168,7 @@ export const MyDocument = ({ order }: { order: any }) => {
               >
                 Total:
               </Text>
-              <Text
-                style={[styles.tableCol, { width: "20%", fontWeight: "bold" }]}
-              >
-                PHP {total}
-              </Text>
+              <Text style={[styles.tableCol, { width: "20%", fontWeight: "bold" }]}>PHP {total}</Text>
             </View>
           </View>
         </View>

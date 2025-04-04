@@ -43,3 +43,24 @@ export async function getDashboardBarchartServerAction() {
         console.error("Something went wrong while fetching analytics data:", error);
     }
 }
+
+export async function generateSalesReport(date : {start_date: string, end_date: string}) {
+    try {
+        const auth_token = await getSessionNextAuth();
+
+        const response = await fetch(`${API_ENDPOINT}/auth/sales-report`, {
+            method: "POST",
+            headers: {
+                Cookie: `auth__token=${auth_token}`
+            },
+            body: JSON.stringify(date)
+        });
+
+        const data = await response.json();
+
+        if(!response.ok) return {error: data.message}
+        return data.data;
+    } catch (error) {
+        console.error("Something went wrong while fetching analytics data:", error);
+    }
+}
