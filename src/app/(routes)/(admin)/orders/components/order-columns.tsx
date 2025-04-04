@@ -14,28 +14,6 @@ import Link from "next/link";
 
 export const columns: ColumnDef<IOrders>[] = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
     accessorKey: "order_number",
     header: () => <div className="text-left">Order Number</div>,
     cell: ({ row }) => {
@@ -97,6 +75,9 @@ export const columns: ColumnDef<IOrders>[] = [
     header: ({ column }) => <div className="flex items-center gap-2 cursor-pointer hover:text-slate-600" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>Priority <ArrowUpDown size={15} /></div>,
     cell: ({ row }) => {
       const target_date = row.getValue("order_target_date_received") as string;
+      const status = row.getValue("tbl_order_status") as { status: string }[];
+      const status_type = status[0].status.replace("_", " ");
+
       const now = new Date();
       const targetDate = new Date(target_date.replace(" ", "T"));
     
@@ -105,13 +86,17 @@ export const columns: ColumnDef<IOrders>[] = [
       const millisecondsInADay = 1000 * 60 * 60 * 24;
       const remaining_days = Math.ceil(diffInMs / millisecondsInADay);
 
-     if(remaining_days < 3) {
-       return <Badge className="bg-red-100 font-normal text-red-500 hover:bg-red-100">High</Badge>;
-     } else if (remaining_days <= 3){
-      return <Badge className="bg-yellow-100 font-normal text-yellow-500 hover:bg-yellow-100">Medium</Badge>;
-     } else {
-      return <Badge className="bg-green-100 font-normal text-green-500 hover:bg-green-100">Low</Badge>;
-     }
+     if(status_type !== "PAID") {
+        return <Badge className="bg-green-100 font-normal text-green-500 hover:bg-green-100">Completed</Badge>;
+      } else {
+        if(remaining_days < 3) {
+          return <Badge className="bg-red-100 font-normal text-red-500 hover:bg-red-100">High</Badge>;
+        } else if (remaining_days <= 3){
+         return <Badge className="bg-yellow-100 font-normal text-yellow-500 hover:bg-yellow-100">Medium</Badge>;
+        } else {
+         return <Badge className="bg-green-100 font-normal text-green-500 hover:bg-green-100">Low</Badge>;
+        }
+      }
     }
   }, {
     accessorKey: "order_date_created",

@@ -41,10 +41,10 @@ export async function addToCartServerAction(payload: any) {
       },
       body: JSON.stringify(payload),
     });
-
-    if (!response.ok) return { error: response.statusText };
-
     const data = await response.json();
+
+    if (!response.ok) return { error: data.message};
+
     revalidateTag("cart");
     return data;
   } catch (error) {
