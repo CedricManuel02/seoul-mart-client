@@ -179,27 +179,78 @@ export async function getVerificationTokenEmailServerAction(token: string) {
   }
 }
 
-// export async function getAccountServerAction() {
-//   try {
-//     const cookieStore = await cookies();
-//     const auth_token = cookieStore.get("auth__token")?.value;
+export async function getAccountServerAction() {
+  try {
+    const auth_token = await getSessionNextAuth();
 
-//     if(!auth_token) redirect("/login?error=unauthorized");
+    const response = await fetch(`${API_ENDPOINT}/auth/account`, {
+      method: "GET",
+      headers: {
+        Cookie: `auth__token=${auth_token}`
+      }
+    });
+    const data = await response.json();
 
-//     const response = await fetch(`${API_ENDPOINT}/auth/account`, {
-//       method: "GET",
-//       headers: {
-//         Cookie: `auth__token=${auth_token}`
-//       }
-//     });
+    if (!response.ok) return { error: data.message };
 
-//     const data = await response.json();
+    return { data: data.data };
+  } catch (error) {
+    console.error("Something went wrong while registering your account", error);
+    return { error: "Something went wrong while registering your account" };
+  }
+}
+export async function updateProfileServerAction( account : any) {
+  try {
+    const auth_token = await getSessionNextAuth();
 
-//     if (!response.ok) return { error: data.message };
+    const formData = new FormData();
 
-//     return { data: data.data };
-//   } catch (error) {
-//     console.error("Something went wrong while registering your account", error);
-//     return { error: "Something went wrong while registering your account" };
-//   }
-// }
+    formData.append("user_name", account.user_name);
+
+    if (account.user_phone) {
+      formData.append("user_phone", account.user_phone);
+    }
+
+    if (account.user_profile) {
+      formData.append("user_profile", account.user_profile as File);
+    }
+
+    const response = await fetch(`${API_ENDPOINT}/auth/file/update-profile`, {
+      method: "POST",
+      headers: {
+        Cookie: `auth__token=${auth_token}`,
+      },
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) return { error: data.message };
+
+    return { success: data.message, data: data.data };
+  } catch (error) {
+    console.error("Something went wrong while updating your profile", error);
+    return { error: "Something went wrong while updating your profile" };
+  }
+}
+export async function deleteProfieImageServerAction() {
+  try {
+    const auth_token = await getSessionNextAuth();
+
+    const response = await fetch(`${API_ENDPOINT}/auth/file/delete-profile-image`, {
+      method: "PUT",
+      headers: {
+        Cookie: `auth__token=${auth_token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) return { error: data.message };
+
+    return { success: data.message};
+  } catch (error) {
+    console.error("Something went wrong while deleting your profile", error);
+    return { error: "Something went wrong while deleting your profile" };
+  }
+}

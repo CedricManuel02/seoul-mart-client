@@ -4,6 +4,7 @@ import Logo from "@/_assets/logo.png";
 import NavigationSearch from "./navigation-search";
 import Link from "next/link";
 import NavigationUserAction from "./navigation-user-action";
+import NavigationBarContainer from "./navigation-bar-container";
 export default function NavigationBar() {
   return (
     <nav className="w-full py-2 shadow-md">
@@ -14,8 +15,10 @@ export default function NavigationBar() {
         </Link>
         {/* Navigation Bar Search */}
         <NavigationSearch />
-        {/* User Action */}
-        <NavigationUserAction/>
+        <NavigationBarContainer>
+          {/* User Action */}
+          <NavigationUserAction />
+        </NavigationBarContainer>
       </section>
     </nav>
   );

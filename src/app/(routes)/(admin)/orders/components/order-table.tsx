@@ -15,8 +15,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import React from "react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
 import { IOrders } from "@/_interface/interface";
 import { OrderExportSales } from "./order-export-sales";
 interface DataTableProps<TData, TValue> {
@@ -99,10 +97,7 @@ export default function OrderTable({ columns, data }: DataTableProps<IOrders, an
           </TableBody>
         </Table>
       </div>
-      <div className="py-4 flex flex-col md:flex-row justify-between items-center">
-        <div className="text-sm flex text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
+      <div className="py-4 flex flex-col md:flex-row justify-end items-center">
         <div className="flex items-center justify-end space-x-2">
           <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
             Previous

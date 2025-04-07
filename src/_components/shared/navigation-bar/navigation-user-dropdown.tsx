@@ -22,6 +22,7 @@ export default async function NavigationUserDropdown() {
         {session && (
           <Avatar className="w-8 h-8 cursor-pointer hover:opacity-90">
             <AvatarImage
+              className="object-cover"
               src={session.user.image !== null ? `${session.user.image!}` : `https://api.dicebear.com/9.x/initials/svg?seed=${session.user.name}}`}
             />
           </Avatar>
@@ -37,12 +38,14 @@ export default async function NavigationUserDropdown() {
             <span>Profile</span>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href={"/purchase"} className="flex items-center justify-center space-x-2">
-            <ShoppingBag className="mr-2 h-4 w-4 text-slate-700" />
-            <span>My Purchased</span>
-          </Link>
-        </DropdownMenuItem>
+        {session?.user.role === "USER" && (
+          <DropdownMenuItem>
+            <Link href={"/purchase"} className="flex items-center justify-center space-x-2">
+              <ShoppingBag className="mr-2 h-4 w-4 text-slate-700" />
+              <span>My Purchased</span>
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem>
           <Link href={"/reset-profile-password"} className="flex items-center justify-center space-x-2">
             <KeyRound className="mr-2 h-4 w-4 text-slate-700" />
