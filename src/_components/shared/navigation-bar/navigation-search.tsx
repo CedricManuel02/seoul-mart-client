@@ -4,9 +4,12 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { Wifi, WifiHigh, WifiLow } from "lucide-react";
+import { Wifi, WifiHigh} from "lucide-react";
+import { useSession } from "next-auth/react";
 
 export default function NavigationSearch() {
+  const {data: session} = useSession();
+
   const router = useRouter();
   const [search, setSearch] = useState<string>("");
   const searchOptions = ["Samyang Buldak...", "Peppero...", "Soju..."];
@@ -63,7 +66,7 @@ export default function NavigationSearch() {
   );
 
   const searchProduct = useCallback(() => {
-    if (search !== "") {
+    if (search.trim() !== "") {
       router.push(`/search/${search}`);
     }
   }, [search]);
@@ -94,6 +97,10 @@ export default function NavigationSearch() {
       window.removeEventListener("offline", handleOffline);
     };
   }, []); 
+
+  if(session && session?.user.role === "ADMIN") {
+    return null; // Hide the search bar for admin users
+  }
   return (
     <div className="hidden md:block w-5/12">
       <div className="flex items-center gap-2 w-full">

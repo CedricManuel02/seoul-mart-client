@@ -17,7 +17,11 @@ export const formProfileSchema = z.object({
   user_email: z.string().min(1, {message: "Email is required"}),
   user_phone: z
   .string()
-  .regex(/^(\+?63|0)9\d{9}$/, { message: "Invalid PH mobile number format" }),
+  .nullable()
+  .optional()
+  .refine((value) => !value || /^(\+?63|0)9\d{9}$/.test(value), {
+    message: "Invalid PH mobile number format",
+  }),
   user_profile:  z
   .instanceof(File)
   .optional()
