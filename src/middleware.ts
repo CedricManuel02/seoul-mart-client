@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request, secret: process.env.AUTH_SECRET });
   const { pathname } = request.nextUrl;
   
-  if (!token && (pathname.startsWith("/purchase/item") || pathname.startsWith("/purchase"))) {
+  if (!token && (pathname.startsWith("/purchase/item") || pathname.startsWith("/purchase") || pathname.startsWith("/product/update"))) {
     return NextResponse.redirect(new URL("/", request.url)); 
   }
 

@@ -186,3 +186,29 @@ export async function updateVariantServerAction(payload: { variant_id: string; v
     return { error: "Something went wrong while updating variant" };
   }
 }
+
+// DELETING RATING SERVER ACTION
+export async function deleteRatingServerAction(rating_id: string) {
+  try {
+    const auth_token = await getSessionNextAuth();
+
+    if (!rating_id) return { error: "Rating ID not found" };
+
+    const response = await fetch(`${API_ENDPOINT}/auth/delete-rating/file/${rating_id}`, {
+      method: "DELETE",
+      headers: {
+        Cookie: `auth__token=${auth_token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) return { error: data.message };
+
+    revalidateTag("product");
+    return { success: data.message };
+  } catch (error) {
+    console.error("Something went wrong while deleting rating:", error);
+    return { error: "Something went wrong while deleting rating" };
+  }
+}

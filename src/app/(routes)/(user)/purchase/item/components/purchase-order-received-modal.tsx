@@ -28,7 +28,7 @@ export default function PurchaseOrderReceivedModal({ order_id }: { order_id: str
       }
 
       toast({ description: response.success });
-      socket.emit("send_order_received_notification");
+      socket.emit("user_send_notification");
     } catch (error) {
       console.error("Something went wrong while processing the order receive:", error);
       toast({variant: "destructive", description: "Failed to process receiving order, please try again later"});

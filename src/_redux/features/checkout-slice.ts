@@ -82,12 +82,24 @@ export const cartSlice = createSlice({
     resetShippingFee: (state) => {
       state.shippingFee = 0;
       state.shippingDays = 0;
-    }
+    },
+    addSingleCheckoutItem: (state, action: PayloadAction<{ tbl_products: IProduct; tbl_variants: IVariants; quantity: number;}>) => {
+        const { tbl_products, tbl_variants, quantity } = action.payload;
+        const itemExists = state.item.find((item) => item.tbl_variants?.variant_id === tbl_variants.variant_id);
+        if(!itemExists) {
+          state.item.push({
+            cart_id: null,
+            tbl_products,
+            tbl_variants,
+            quantity,
+          });
+        }
+      },
   },
 });
 
 // Export actions
-export const {setShippingLoading, setShippingFee, resetShippingFee, addCheckoutItem, clearCheckoutItem, calculateCheckoutTotal, removeCheckoutItem, clearCheckoutTotal, updateCheckoutQuantity } = cartSlice.actions;
+export const {addSingleCheckoutItem, setShippingLoading, setShippingFee, resetShippingFee, addCheckoutItem, clearCheckoutItem, calculateCheckoutTotal, removeCheckoutItem, clearCheckoutTotal, updateCheckoutQuantity } = cartSlice.actions;
 
 // Export reducer
 export default cartSlice.reducer;

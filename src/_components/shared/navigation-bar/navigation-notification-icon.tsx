@@ -1,5 +1,5 @@
 import { DEFAULT_ICON_SIZE } from "@/_constant/constant";
-import { Truck, CheckCircle, CreditCard, Package, XCircle, PackageOpen,  Star } from "lucide-react"; // Import icons
+import { Truck, CheckCircle, CreditCard, Package, XCircle, PackageOpen, Star, MailWarning } from "lucide-react"; // Import icons
 
 const getStatusIcon = (status: string) => {
   switch (status) {
@@ -17,17 +17,13 @@ const getStatusIcon = (status: string) => {
       return <XCircle size={DEFAULT_ICON_SIZE} className="text-red-500" />;
     case "RATING":
       return <Star size={DEFAULT_ICON_SIZE} className="text-pink-500" />;
+    case "VIOLATION":
+      return <MailWarning size={DEFAULT_ICON_SIZE} className="text-red-500" />;
     default:
       return null;
   }
 };
 
-
-export default function NavigationNotificationIcon({status} : {status: string}) {
-  return (
-    <div>
-      {getStatusIcon(status)}
-    </div>
-  )
+export default function NavigationNotificationIcon({ status }: { status: string }) {
+  return <div>{getStatusIcon(status)}</div>;
 }
-

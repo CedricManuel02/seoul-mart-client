@@ -68,7 +68,7 @@ export default function OrderShippedModal({
       }
 
       if(response.status === 200) {
-        socket.emit("send_notification", { recipientUserId: user_id });
+        socket.emit("admin_send_notification", { recipientUserId: user_id });
       }
     } catch (error) {
       console.error("Something went wrong while logging in", error);
