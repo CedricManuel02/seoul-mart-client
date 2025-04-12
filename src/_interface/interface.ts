@@ -82,7 +82,7 @@ export interface ICartItem {
 }
 //CHECKOUT INTERFACE
 export interface ICheckout {
-  cart_id: string;
+  cart_id: string | null;
   tbl_products: IProduct | null;
   tbl_variants: IVariants | null;
   quantity: number;
@@ -256,6 +256,9 @@ export interface INotifications {
   user_sender_id: string;
   user_receiver_id: string;
   status: string;
+
+  order_id?:string;
+  product_id?: string;
 }
 
 // ACCOUNT

@@ -9,17 +9,21 @@ import { Check, Truck, X } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import PurchaseActionButton from "../components/purchase-action-button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ItemCommentStarRating from "../../../products/item/components/item-comment-star-rating";
 
 export default async function PurchasedItem({ params }: { params: { id: string } }) {
   const { id } = await params;
-  
-  if(!id) return <Custom404 />;
-  
-  const order: IOrders = await getOrderServerAction({ order_id: id });
 
+  if (!id) return <Custom404 />;
+
+  const order: IOrders = await getOrderServerAction({ order_id: id });
   if (!order) return <Custom404 />;
 
-  const totalItems = order.tbl_items.reduce((sum: number, item: IItems) => sum + Number(item.item_product_price_at_time_purchase) * Number(item.item_quantity),0);
+  const totalItems = order.tbl_items.reduce(
+    (sum: number, item: IItems) => sum + Number(item.item_product_price_at_time_purchase) * Number(item.item_quantity),
+    0
+  );
 
   const total = totalItems + order.order_shipping_fee;
 
@@ -46,7 +50,9 @@ export default async function PurchasedItem({ params }: { params: { id: string }
             <div className="flex flex-col items-center sm:items-start justify-center space-y-4 z-10">
               <div
                 className={`${
-                  order.tbl_order_status.some((item: IOrderStatus) => item.status.replace("_", " ") === "PLACED ORDER") ? "bg-green-500" : "bg-slate-400"
+                  order.tbl_order_status.some((item: IOrderStatus) => item.status.replace("_", " ") === "PLACED ORDER")
+                    ? "bg-green-500"
+                    : "bg-slate-400"
                 } w-7 h-7 rounded-full text-white flex items-center justify-center`}
               >
                 <Check size={14} />
@@ -63,16 +69,14 @@ export default async function PurchasedItem({ params }: { params: { id: string }
               </div>
               <p className="text-slate-700 text-sm">Paid</p>
             </div>
-           {order.tbl_cancelled_order && order.tbl_order_status.some((item: IOrderStatus) => item.status === "CANCELLED") && (
-           <div className="flex flex-col items-center justify-center space-y-4 z-10">
-              <div
-                className="bg-red-500 w-7 h-7 rounded-full text-white flex items-center justify-center"
-              >
-                <X size={14} />
+            {order.tbl_cancelled_order && order.tbl_order_status.some((item: IOrderStatus) => item.status === "CANCELLED") && (
+              <div className="flex flex-col items-center justify-center space-y-4 z-10">
+                <div className="bg-red-500 w-7 h-7 rounded-full text-white flex items-center justify-center">
+                  <X size={14} />
+                </div>
+                <p className="text-slate-700 text-sm">Cancelled</p>
               </div>
-              <p className="text-slate-700 text-sm">Cancelled</p>
-            </div>
-           )}
+            )}
             <div className="flex flex-col items-center justify-center space-y-4 z-10">
               <div
                 className={`${
@@ -165,7 +169,9 @@ export default async function PurchasedItem({ params }: { params: { id: string }
               <ul className="text-slate-500 text-sm font-medium list-disc px-4">
                 {order.tbl_order_status.map((status: IOrderStatus) => (
                   <li key={status.order_status_id}>
-                    <h3 className="font-medium text-slate-700">{status.status} {status.status === "CANCELLED" && order.tbl_cancelled_order.cancelled_reason}</h3>
+                    <h3 className="font-medium text-slate-700">
+                      {status.status} {status.status === "CANCELLED" && order.tbl_cancelled_order.cancelled_reason}
+                    </h3>
                     <p>{formatDateWithTime(String(status.order_status_date_created))}</p>
                   </li>
                 ))}
@@ -189,6 +195,55 @@ export default async function PurchasedItem({ params }: { params: { id: string }
           </div>
         </div>
       </div>
+      {/* Product already rated*/}
+      {order.tbl_rating.length > 0 && (
+         <div className="w-full md:w-10/12 lg:w-7/12 h-auto bg-white py-4 p-6 rounded-md shadow">
+         <div className="py-3">
+           <h3 className="font-semibold text-sm text-slate-900">Product Rating</h3>
+           <p className="text-slate-500 text-sm">List of user rating</p>
+         </div>
+           <div className="flex flex-col gap-4 py-4">
+             {order.tbl_rating.map((rating: any) => (
+               <div
+                 key={rating.rating_id}
+                 className={`${rating.rating_date_deleted ? "opacity-50" : "opacity-100"} p-2 flex items-start justify-between`}
+               >
+                 <div className="flex items-start gap-2">
+                   <Avatar className="w-8 h-8 cursor-pointer hover:opacity-90">
+                     <AvatarImage
+                       src={`${
+                         rating.tbl_users.user_profile
+                           ? rating.tbl_users.user_profile
+                           : `https://api.dicebear.com/9.x/initials/svg?seed=${rating.tbl_users.user_name}`
+                       }`}
+                     />
+                     <AvatarFallback>CN</AvatarFallback>
+                   </Avatar>
+                   <div>
+                     <h3 className="text-slate-700 text-sm font-medium">{rating.tbl_users.user_name}</h3>
+                     <p className="text-slate-500 text-xs font-medium">{formatDate(rating.rating_date_created)}</p>
+                     <div className="flex items-center gap-2">
+                       <ItemCommentStarRating rating={rating.rating} />
+                       <div className="flex items-center gap-2">
+                         <Badge variant={"secondary"} className="text-xs font-medium">
+                           {rating.tbl_variants.variant_name}
+                         </Badge>
+                         {rating.rating_date_deleted && (
+                           <Badge variant={"destructive"} className="text-xs font-medium">
+                             Removed
+                           </Badge>
+                         )}
+                       </div>
+                     </div>
+                     <p className="text-sm text-slate-500 py-2 w-full lg:w-7/12">{rating.rating_text}</p>
+                   </div>
+                 </div>
+              
+               </div>
+             ))}
+           </div>
+       </div>
+      )}
       {/* Button For Order Action */}
       <PurchaseActionButton order={order} />
     </div>

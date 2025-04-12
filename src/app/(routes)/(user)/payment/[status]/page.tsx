@@ -1,8 +1,9 @@
 "use client";
-import { deleteOrderServerAction } from "@/_action/(user)/order";
+import { deleteOrderServerAction, successOrderSeverAction } from "@/_action/(user)/order";
 import { clearSelectedItems } from "@/_redux/features/cart-slice";
 import { clearCheckoutItem } from "@/_redux/features/checkout-slice";
 import { Button } from "@/components/ui/button";
+import socket from "@/lib/socket";
 import { CircleCheck, CircleX } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
@@ -25,8 +26,19 @@ export default function Payment() {
       async function deleteOrder(session_id: string) {
         await deleteOrderServerAction({ session_id });
       }
-      if (status?.toString().toLowerCase() === "cancel" && session_id) {
-        deleteOrder(session_id);
+      async function successOrder(session_id: string) {
+        const response = await successOrderSeverAction({session_id})
+
+        if(response.success) {
+          socket.emit("user_send_notification");
+        }
+      }
+      switch (status?.toString().toLowerCase()) {
+        case "cancel":
+          deleteOrder(session_id!);
+          break;
+        case "success":
+          successOrder(session_id!);
       }
     } catch (error) {
       console.error("Something went wrong while processing the cancelled order:", error);

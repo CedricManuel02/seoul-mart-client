@@ -1,6 +1,6 @@
 "use client";
 import { createRatingServerAction } from "@/_action/(user)/order";
-import { ACCEPTED_IMAGE_TYPES } from "@/_constant/constant";
+import { ACCEPTED_IMAGE_TYPES, DEFAULT_ICON_SIZE } from "@/_constant/constant";
 import { IItems, IOrders, IRating } from "@/_interface/interface";
 import { formRateOrderSchema } from "@/_zod-schema/zod-schema";
 import { Button } from "@/components/ui/button";
@@ -57,8 +57,8 @@ export default function PurchaseRatingModal({ order }: { order: IOrders }) {
         return;
       }
 
-      toast({ title: "Thank you for your feedback", description: response.success });
-      socket.emit("send_rating_product_notification");
+      toast({ title: "Thank you for your feedback", description: (<div className="flex items-center gap-2"><Star className="text-yellow-yellow"/><p>{response.success}</p></div>) });
+      socket.emit("user_send_notification");
     } catch (error) {
       console.error("Something went wrong while submitting rating", error);
       toast({ variant: "destructive", description: "Something went wrong while submitting your rating, please try again later" });

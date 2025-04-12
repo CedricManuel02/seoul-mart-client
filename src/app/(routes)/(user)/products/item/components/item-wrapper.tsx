@@ -153,7 +153,7 @@ export default function ItemWrapper({ item, session }: { item: IProduct; session
             </Button>
           </div>
         </div>
-        <ItemActionButton session={session} product_id={item.product_id} selected_variant_id={selectedVariant.variant_id} item_quantity={quantity} />
+        <ItemActionButton session={session} product={item} variant={selectedVariant} product_id={item.product_id} selected_variant_id={selectedVariant.variant_id} item_quantity={quantity} />
       </figcaption>
     </figure>
   );

@@ -13,9 +13,9 @@ export default function ProductVariants({ variant }: { variant: IVariants[] }) {
   return (
     <HoverCard>
       <HoverCardTrigger className="cursor-pointer hover:underline hover:text-green-500">{variant.length} available</HoverCardTrigger>
-      <HoverCardContent>
-        {variant.map((variants) => (
-          <div key={variants.variant_id} className="w-96 font-medium flex py-2 items-center gap-2 whitespace-break-spaces">
+      <HoverCardContent className="w-auto">
+        {variant.map((variants: any) => (
+          <div key={variants.variant_id} className="w-auto font-medium flex py-2 items-center gap-2 whitespace-break-spaces">
             <Image
               src={variants.variant_image_url}
               alt="Variant Image"
@@ -24,7 +24,7 @@ export default function ProductVariants({ variant }: { variant: IVariants[] }) {
               height={100}
               loading="lazy"
             />
-            <div>
+            <div className="whitespace-nowrap">
               <p className="text-sm">{variants.variant_name}</p>
               <div className="flex items-center space-x-2 text-xs text-slate-500">
                 {variants.tbl_variant_item?.[0]?.tbl_discount?.discount_percentage ? (
@@ -41,6 +41,8 @@ export default function ProductVariants({ variant }: { variant: IVariants[] }) {
                 )}
                 <Separator className="h-3" orientation="vertical" />
                 <p>{variants.variant_stocks} Stocks</p>
+                <Separator className="h-3" orientation="vertical" />
+                <p>{variants.tbl_rating.length} Review</p>
               </div>
             </div>
           </div>

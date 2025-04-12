@@ -15,6 +15,7 @@ import { getNotificationsServerAction, markNotificationsAsReadServerAction } fro
 import { INotifications } from "@/_interface/interface";
 import { formatNotificationDate } from "@/_utils/helper";
 import NavigationNotificationIcon from "./navigation-notification-icon";
+import Link from "next/link";
 
 export default function NavigationUserNotification({ session }: { session: any }) {
   const [notifications, setNotifications] = useState<INotifications[]>([]);
@@ -64,16 +65,7 @@ export default function NavigationUserNotification({ session }: { session: any }
       toast({ description: `Received a new notification` });
       getNotifications();
     });
-    // Listen for new notifications
-    socket.on("received_rating_product_notification", () => {
-      toast({ description: `Received a new notification` });
-      getNotifications();
-    });
-    // Listen for new notifications
-    socket.on("received_order_received_notification", () => {
-      toast({ description: `Received a new notification` });
-      getNotifications();
-    });
+ 
     return () => {
       socket.off("receive_notification");
     };
@@ -85,6 +77,13 @@ export default function NavigationUserNotification({ session }: { session: any }
     }
   }, [session]);
 
+
+  const getNotificationLink = (notifications: INotifications) => {
+    if(notifications.order_id) return session.user.role === "ADMIN" ? `/orders/item/${notifications.order_id}` : `/purchase/item/${notifications.order_id}`;
+    if(notifications.product_id) return  session.user.role === "ADMIN" ? `/product/update/${notifications.order_id}` : `/purchase/item/${notifications.order_id}`; ;
+
+    return "";
+  }
   return (
     <DropdownMenu onOpenChange={handleReadNotifications}>
       {/* Drop-down Button */}
@@ -109,11 +108,11 @@ export default function NavigationUserNotification({ session }: { session: any }
         <div className="max-h-44 overflow-x-hidden overflow-y-scroll custom-scrollbar">
           {notifications.length > 0 ? (
             notifications.map((notification: INotifications) => (
-              <div
+              <Link href={getNotificationLink(notification)}
                 key={notification.notifications_id}
                 className={`${
                   notification.notifications_read ? "bg-white" : "bg-slate-100"
-                } flex items-start gap-2 p-2 rounded`}
+                } flex items-start gap-2 p-2 rounded hover:bg-slate-100`}
               >
                 <div className="flex items-center justify-center bg-slate-200 p-1 rounded-full">
                   <NavigationNotificationIcon status={notification.status} />
@@ -126,7 +125,7 @@ export default function NavigationUserNotification({ session }: { session: any }
                   <p className="text-xs text-slate-500">{notification.notifications_body}</p>
                   <DropdownMenuSeparator />
                 </div>
-              </div>
+              </Link>
             ))
           ) : (
             <div className="h-20 flex items-center justify-center gap-2 text-slate-400 text-sm">

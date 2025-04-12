@@ -146,3 +146,23 @@ export async function deleteOrderServerAction({session_id}: {session_id: string}
     return { error: "An unexpected error occured while processing order delete" };
   }
 }
+
+export async function successOrderSeverAction({session_id}: {session_id: string}) {
+  try {
+    const auth_token = await getSessionNextAuth();
+ 
+    const response = await fetch(`${API_ENDPOINT}/auth/order/success/${session_id}`, {
+      method: "GET",
+      headers: { Cookie: `auth__token=${auth_token}` },
+    });
+    const data = await response.json();
+
+    if(!response.ok) return {error: data.message};
+
+    return {success: data.message};
+
+  } catch (error) {
+    console.error("Something went wrong while processing order delete:", error);
+    return { error: "An unexpected error occured while processing order delete" };
+  }
+}
