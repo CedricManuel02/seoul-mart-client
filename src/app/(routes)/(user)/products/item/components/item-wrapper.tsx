@@ -19,6 +19,8 @@ export default function ItemWrapper({ item, session }: { item: IProduct; session
   const [selectedVariant, setSelectedVariant] = useState<IVariants>(item.tbl_variants[0]);
   const [stock, setStock] = useState<number>(0);
 
+
+  //TODO: fix the categories backend
   useEffect(() => {
     async function updateSelectedVariant() {
       if (selectedVariant) {
@@ -33,14 +35,17 @@ export default function ItemWrapper({ item, session }: { item: IProduct; session
     updateSelectedVariant();
   }, [selectedVariant]);
 
-  const handleVariantChange = useCallback((variant_id: string) => {
-    const selected = item.tbl_variants.find((variant) => variant.variant_id === variant_id);
-    if (selected) {
-      setQuantity(1);
-      setSelectedImage(selected);
-      setSelectedVariant(selected);
-    }
-  }, [item.tbl_variants]);
+  const handleVariantChange = useCallback(
+    (variant_id: string) => {
+      const selected = item.tbl_variants.find((variant) => variant.variant_id === variant_id);
+      if (selected) {
+        setQuantity(1);
+        setSelectedImage(selected);
+        setSelectedVariant(selected);
+      }
+    },
+    [item.tbl_variants]
+  );
 
   const handleVariantImageChange = useCallback((variant_id: string) => {
     const selected = item.tbl_variants.find((variant) => variant.variant_id === variant_id);
@@ -114,19 +119,11 @@ export default function ItemWrapper({ item, session }: { item: IProduct; session
         <p className="text-slate-500 text-sm text-justify lg:text-left">{item.product_description}</p>
         <div>
           <h3 className="font-medium py-4 text-slate-500 text-sm">Payment Method Available</h3>
-          <Badge variant={"outline"}>
-            <div className="flex items-center gap-2">
-              <Image
-                src={"https://static-00.iconduck.com/assets.00/visa-icon-2048x1313-o6hi8q5l.png"}
-                alt="Card"
-                className="h-auto w-auto rounded"
-                width={25}
-                height={100}
-              />
-              <p>Card</p>
-            </div>
-          </Badge>
-          <div className="text-slate-500 text-sm text-justify flex"><p>Secured payment powered by</p><Image src={"https://vikwp.com/images/plugins/stripe.png"} alt="Stripe" width={50} height={50}/></div>
+          <Badge variant={"outline"}>Card</Badge>
+          <div className="text-slate-500 text-sm text-justify flex">
+            <p>Secured payment powered by</p>
+            <Image src={"https://vikwp.com/images/plugins/stripe.png"} alt="Stripe" width={50} height={50} />
+          </div>
         </div>
         <div className="flex flex-col md:flex-row md:items-center md:gap-2">
           {/* Variant Selection */}
@@ -153,7 +150,14 @@ export default function ItemWrapper({ item, session }: { item: IProduct; session
             </Button>
           </div>
         </div>
-        <ItemActionButton session={session} product={item} variant={selectedVariant} product_id={item.product_id} selected_variant_id={selectedVariant.variant_id} item_quantity={quantity} />
+        <ItemActionButton
+          session={session}
+          product={item}
+          variant={selectedVariant}
+          product_id={item.product_id}
+          selected_variant_id={selectedVariant.variant_id}
+          item_quantity={quantity}
+        />
       </figcaption>
     </figure>
   );
