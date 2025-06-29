@@ -66,6 +66,8 @@ export const columns: ColumnDef<IOrders>[] = [
           return <Badge className="bg-red-100 font-normal text-red-500 hover:bg-red-100">{status_type}</Badge>;
         case "REFUNDED":
           return <Badge className="bg-orange-100 font-normal text-orange-500 hover:bg-orange-100">{status_type}</Badge>;
+          case "SHIPPED":
+            return <Badge className="bg-yellow-100 font-normal text-yellow-500 hover:bg-yellow-100">{status_type}</Badge>;
         case "DELIVERED":
           return <Badge className="bg-blue-100 font-normal text-blue-500 hover:bg-blue-100">{status_type}</Badge>;
       }
